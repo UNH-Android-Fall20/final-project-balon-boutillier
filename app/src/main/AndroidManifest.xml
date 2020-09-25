@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android ="http://schemas.android.com/apk/res/android"
-    package       ="dev.jzdevelopers.cstracker">
+    package       ="dev.project.ib2d2">
 
     <!-- Global Application Preferences -->
     <application
@@ -15,7 +15,7 @@
         android:theme               ="@style/RedTheme">
 
         <!-- Activity MainActivity -->
-        <activity android:name="dev.jzdevelopers.common.MainActivity">
+        <activity android:name="dev.project.common.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
