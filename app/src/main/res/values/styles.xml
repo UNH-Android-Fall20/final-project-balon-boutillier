@@ -3,15 +3,12 @@
 <!-- Android Global Style Themes For Application -->
 <resources>
 
-    <!-- Red Theme -->
-    <style name="RedTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-
-        <!-- Default Android Specific Options -->
-        <item name="android:navigationBarColor">@color/redDark </item>
-        <item name="android:statusBarColor"    >@color/white   </item>
-        <item name="colorAccent"               >@color/redDark </item>
-        <item name="colorPrimary"              >@color/red     </item>
-        <item name="colorPrimaryDark"          >@color/redDark </item>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
 </resources>

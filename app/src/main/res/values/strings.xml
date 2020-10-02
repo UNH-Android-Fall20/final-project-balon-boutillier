@@ -5,5 +5,7 @@
 
     <!-- Activity Name Strings -->
     <string name="app_name">iB2D2</string>
-
+    <string name="username">Username</string>
+    <string name="signUp_button">Sign up test</string>
+    <string name="password">Password</string>
 </resources>
