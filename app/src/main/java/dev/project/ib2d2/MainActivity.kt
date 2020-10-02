@@ -31,19 +31,21 @@ class MainActivity : AppCompatActivity() {
     private fun signUp(username: EditText, password: EditText) {
 
         // TODO Passwords must always be hashed before being saved, this is for testing atm
-        val testUser = hashMapOf(
-            "username" to username.text.toString(),
-            "password" to password.text.toString(),
-        )
-        db.collection("test")
-            .add(testUser)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "Document added with ID ${documentReference.id}")
-                username.setText("")
-                password.setText("")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
+        if(username.text.toString() != "" && password.text.toString() != "") {
+            val testUser = hashMapOf(
+                "username" to username.text.toString(),
+                "password" to password.text.toString(),
+            )
+            db.collection("test")
+                .add(testUser)
+                .addOnSuccessListener { documentReference ->
+                    Log.d(TAG, "Document added with ID ${documentReference.id}")
+                    username.setText("")
+                    password.setText("")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error adding document", e)
+                }
+        }
     }
 }
