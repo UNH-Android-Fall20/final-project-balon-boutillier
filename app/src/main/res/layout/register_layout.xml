@@ -21,16 +21,17 @@
         android:hint="@string/password"
         android:inputType="textPassword" />
 
-    <Button
-        android:id="@+id/login_button"
+    <EditText
+        android:id="@+id/editText_confirmPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_button" />
+        android:hint="@string/confirmPassword"
+        android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/createAccount_button"
+        android:id="@+id/signUp_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/createAccount"/>
+        android:text="@string/register" />
 
 </LinearLayout>
