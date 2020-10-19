@@ -17,9 +17,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var createAccountButton: Button
     private lateinit var signUpButton: Button
     private lateinit var confirmPasswordText: EditText
+    private lateinit var registerBackButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loginScreen()
+    }
+
+    private fun loginScreen() {
         setContentView(R.layout.activity_main)
 
         loginButton = findViewById(R.id.login_button)
@@ -35,11 +40,16 @@ class MainActivity : AppCompatActivity() {
             confirmPasswordText = findViewById(R.id.editText_confirmPassword)
             usernameText = findViewById(R.id.editText_username)
             passwordText = findViewById(R.id.editText_password)
+            registerBackButton = findViewById(R.id.registerBack_button)
 
             signUpButton.setOnClickListener {
                 if(confirmPasswordText.text.toString() == passwordText.text.toString()) {
                     signUp(usernameText, passwordText, confirmPasswordText)
                 }
+            }
+
+            registerBackButton.setOnClickListener {
+                loginScreen()
             }
         }
     }

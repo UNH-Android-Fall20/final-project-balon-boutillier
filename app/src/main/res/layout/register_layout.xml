@@ -5,6 +5,11 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ib2d2_logo" />
+
     <EditText
         android:id="@+id/editText_username"
         android:layout_margin="5dp"
@@ -33,5 +38,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/register" />
+
+    <Button
+        android:id="@+id/registerBack_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/back" />
 
 </LinearLayout>
