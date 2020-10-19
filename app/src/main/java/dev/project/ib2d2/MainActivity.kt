@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")
+                    setContentView(R.layout.home_layout)
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
