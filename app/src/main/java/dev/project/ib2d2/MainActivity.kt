@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
@@ -45,6 +46,8 @@ class MainActivity : AppCompatActivity() {
             signUpButton.setOnClickListener {
                 if(confirmPasswordText.text.toString() == passwordText.text.toString()) {
                     signUp(usernameText, passwordText, confirmPasswordText)
+                } else {
+                    Toast.makeText(this, "Passwords need to match", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -73,6 +76,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                 }
         }
     }
