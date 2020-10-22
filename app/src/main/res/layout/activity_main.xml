@@ -30,12 +30,16 @@
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_button" />
+        android:text="@string/login_button"
+        android:backgroundTint="@color/colorSecondary"
+        android:textColor="#ffffff" />
 
     <Button
         android:id="@+id/createAccount_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/createAccount"/>
+        android:text="@string/createAccount"
+        android:backgroundTint="@color/colorSecondary"
+        android:textColor="#ffffff" />
 
 </LinearLayout>

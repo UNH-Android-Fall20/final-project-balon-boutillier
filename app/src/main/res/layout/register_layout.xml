@@ -37,12 +37,16 @@
         android:id="@+id/signUp_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register" />
+        android:text="@string/register"
+        android:backgroundTint="@color/colorSecondary"
+        android:textColor="#ffffff"/>
 
     <Button
         android:id="@+id/registerBack_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/back" />
+        android:text="@string/back"
+        android:backgroundTint="@color/colorSecondary"
+        android:textColor="#ffffff" />
 
 </LinearLayout>
