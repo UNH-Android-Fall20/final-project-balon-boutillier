@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var confirmPasswordText: EditText
     private lateinit var registerBackButton: Button
 
+    private var wrongPasswordUsername: String = "Incorrect username or password"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginScreen()
@@ -32,6 +34,10 @@ class MainActivity : AppCompatActivity() {
         usernameText = findViewById(R.id.editText_username)
         passwordText = findViewById(R.id.editText_password)
         createAccountButton = findViewById(R.id.createAccount_button)
+
+        loginButton.setOnClickListener {
+            signIn(usernameText, passwordText)
+        }
 
         createAccountButton.setOnClickListener {
             setContentView(R.layout.register_layout)
@@ -65,10 +71,11 @@ class MainActivity : AppCompatActivity() {
                 "username" to username.text.toString(),
                 "password" to password.text.toString(),
             )
-            db.collection("test")
-                .add(testUser)
+
+            // TODO check if username is unique
+            db.collection("users").document(username.text.toString()).set(testUser)
                 .addOnSuccessListener { documentReference ->
-                    Log.d(TAG, "Document added with ID ${documentReference.id}")
+                    Log.d(TAG, "Document added with hash code ${documentReference.hashCode()}")
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")
@@ -79,5 +86,26 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                 }
         }
+    }
+
+    private fun signIn(username: EditText, password: EditText) {
+        db.collection("users").document(username.text.toString()).get()
+            .addOnSuccessListener { user ->
+                if (user != null) {
+                    Log.d(TAG, "${user.data}")
+                    if (user.data?.get("password") == password.text.toString()) {
+                        setContentView(R.layout.home_layout)
+                    } else {
+                        Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.d(TAG, "Document not found")
+                    Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "$exception")
+                Toast.makeText(this, "Database is down sorry", Toast.LENGTH_SHORT).show()
+            }
     }
 }
