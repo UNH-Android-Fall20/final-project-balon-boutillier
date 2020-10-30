@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.Toast
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
@@ -22,10 +23,24 @@ class MainActivity : AppCompatActivity() {
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        loginScreen()
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when(item.itemId) {
+            R.id.page_3 -> {
+                homeScreen()
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.page_5 -> {
+                aboutScreen()
+                return@OnNavigationItemSelectedListener true
+            }
+            else -> false
+        }
     }
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            loginScreen()
+        }
 
     private fun loginScreen() {
         setContentView(R.layout.activity_main)
@@ -79,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")
-                    setContentView(R.layout.home_layout)
+                    homeScreen()
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
@@ -94,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                 if (user != null) {
                     Log.d(TAG, "${user.data}")
                     if (user.data?.get("password") == password.text.toString()) {
-                        setContentView(R.layout.home_layout)
+                        homeScreen()
                     } else {
                         Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
                     }
@@ -107,5 +122,18 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "$exception")
                 Toast.makeText(this, "Database is down sorry", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    // TODO make the view the variable and pass that
+    private fun homeScreen() {
+        setContentView(R.layout.home_layout)
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    private fun aboutScreen() {
+        setContentView(R.layout.about_layout)
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 }
