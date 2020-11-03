@@ -25,12 +25,24 @@ class MainActivity : AppCompatActivity() {
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when(item.itemId) {
+            R.id.page_1 -> {
+                bottomScreenChange(R.layout.files_layout)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.page_2 -> {
+                bottomScreenChange(R.layout.profile_layout)
+                return@OnNavigationItemSelectedListener true
+            }
             R.id.page_3 -> {
-                homeScreen()
+                bottomScreenChange(R.layout.home_layout)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.page_4 -> {
+                bottomScreenChange(R.layout.settings_layout)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.page_5 -> {
-                aboutScreen()
+                bottomScreenChange(R.layout.about_layout)
                 return@OnNavigationItemSelectedListener true
             }
             else -> false
@@ -94,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")
-                    homeScreen()
+                    bottomScreenChange(R.layout.home_layout)
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
@@ -109,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 if (user != null) {
                     Log.d(TAG, "${user.data}")
                     if (user.data?.get("password") == password.text.toString()) {
-                        homeScreen()
+                        bottomScreenChange(R.layout.home_layout)
                     } else {
                         Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
                     }
@@ -124,15 +136,8 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    // TODO make the view the variable and pass that
-    private fun homeScreen() {
-        setContentView(R.layout.home_layout)
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-    }
-
-    private fun aboutScreen() {
-        setContentView(R.layout.about_layout)
+    private fun bottomScreenChange(layout: Int) {
+        setContentView(layout)
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
