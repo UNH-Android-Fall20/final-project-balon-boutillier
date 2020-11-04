@@ -101,8 +101,8 @@ class MainActivity : AppCompatActivity() {
 
             // TODO check if username is unique
             db.collection("users").document(username.text.toString()).set(testUser)
-                .addOnSuccessListener { documentReference ->
-                    Log.d(TAG, "Document added with hash code ${documentReference.hashCode()}")
+                .addOnSuccessListener {
+                    Log.d(TAG, "Document added")
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")

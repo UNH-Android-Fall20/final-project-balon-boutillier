@@ -19,5 +19,5 @@
     <string name="about">About</string>
     <string name="about_ib2d2">About iB2D2</string>
     <!--TODO TJ add what backblaze is here-->
-    <string name="backblaze_details">This is where the details of how backblaze should go</string>
+    <string name="backblaze_details">This is where the details of how backblaze works should go</string>
 </resources>
