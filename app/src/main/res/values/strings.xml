@@ -18,6 +18,13 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="about_ib2d2">About iB2D2</string>
-    <!--TODO TJ add what backblaze is here-->
-    <string name="backblaze_details">This is where the details of how backblaze works should go</string>
+    <string name="backblaze_details">
+        Powered by BackBlaze, ib2d2 for Android is built on B2 Cloud Storage. B2 Cloud Storage is an
+        affordable cloud storage solution that challenges the pricing and reliability of Amazon S3,
+        Microsoft Azure, and Google Cloud. B2D2 was originally developed in Python as a tool to
+        assist system administrators with backup management. ib2d2 for iOS was a wrapper of B2 which
+        allowed BackBlaze customers to interface with B2 Cloud via their phone. ib2d2 for Android
+        does not require a BackBlaze account, adds team sharing features, increases security, and
+        works to make ib2d2 more user friendly.
+        </string>
 </resources>
