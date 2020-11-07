@@ -7,11 +7,13 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <!--This text view was for testing the bottom navigation bar-->
     <TextView
+        android:id="@+id/profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="profile" />
+        android:layout_marginTop="40dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="25sp" />
 
     <LinearLayout
         android:layout_width="match_parent"

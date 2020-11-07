@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -13,6 +14,8 @@ class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
     private val db = FirebaseFirestore.getInstance()
 
+    private var globalUsername: String = ""
+
     private lateinit var loginButton: Button
     private lateinit var usernameText: EditText
     private lateinit var passwordText: EditText
@@ -20,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var signUpButton: Button
     private lateinit var confirmPasswordText: EditText
     private lateinit var registerBackButton: Button
+    private lateinit var profileName: TextView
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
@@ -31,6 +35,8 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.page_2 -> {
                 bottomScreenChange(R.layout.profile_layout)
+                profileName = findViewById(R.id.profile_name)
+                profileName.setText(globalUsername)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.page_3 -> {
@@ -103,6 +109,7 @@ class MainActivity : AppCompatActivity() {
             db.collection("users").document(username.text.toString()).set(testUser)
                 .addOnSuccessListener {
                     Log.d(TAG, "Document added")
+                    globalUsername = username.text.toString()
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")
@@ -121,6 +128,7 @@ class MainActivity : AppCompatActivity() {
                 if (user != null) {
                     Log.d(TAG, "${user.data}")
                     if (user.data?.get("password") == password.text.toString()) {
+                        globalUsername = username.text.toString()
                         bottomScreenChange(R.layout.home_layout)
                     } else {
                         Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
