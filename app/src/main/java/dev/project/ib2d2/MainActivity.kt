@@ -3,11 +3,9 @@ package dev.project.ib2d2
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
-import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var confirmPasswordText: EditText
     private lateinit var registerBackButton: Button
     private lateinit var profileName: TextView
+    private lateinit var profilePic: ImageView
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
@@ -37,6 +36,10 @@ class MainActivity : AppCompatActivity() {
                 bottomScreenChange(R.layout.profile_layout)
                 profileName = findViewById(R.id.profile_name)
                 profileName.setText(globalUsername)
+                profilePic = findViewById(R.id.profile_pic)
+
+                // TODO replace this url with the actual profile pic retrieved from firestore
+                Glide.with(this).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.page_3 -> {
