@@ -30,4 +30,10 @@
     <string name="profileDescription">Profile Pic</string>
     <string name="editProfile">Edit Profile</string>
     <string name="teams">Teams</string>
+    <string name="save">Save</string>
+    <string name="avatar">Avatar:</string>
+    <string name="upload">Upload Pic</string>
+    <string name="name">Name:</string>
+    <string name="DoB">DoB:</string>
+    <string name="pick">Pick</string>
 </resources>

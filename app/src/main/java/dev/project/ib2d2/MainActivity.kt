@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var registerBackButton: Button
     private lateinit var profileName: TextView
     private lateinit var profilePic: ImageView
+    private lateinit var editProfileButton: Button
+    private lateinit var saveEditProfileButton: Button
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
@@ -33,13 +35,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.page_2 -> {
-                bottomScreenChange(R.layout.profile_layout)
-                profileName = findViewById(R.id.profile_name)
-                profileName.setText(globalUsername)
-                profilePic = findViewById(R.id.profile_pic)
-
-                // TODO replace this url with the actual profile pic retrieved from firestore
-                Glide.with(this).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
+                profileScreen()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.page_3 -> {
@@ -151,5 +147,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(layout)
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    private fun editProfileScreen() {
+        setContentView(R.layout.profile_edit_layout)
+        saveEditProfileButton = findViewById(R.id.save_edit_profile)
+
+        saveEditProfileButton.setOnClickListener {
+            profileScreen()
+        }
+    }
+
+    private fun profileScreen() {
+        bottomScreenChange(R.layout.profile_layout)
+        profileName = findViewById(R.id.profile_name)
+        profileName.setText(globalUsername)
+        profilePic = findViewById(R.id.profile_pic)
+        editProfileButton = findViewById(R.id.edit_profile)
+
+        editProfileButton.setOnClickListener {
+            editProfileScreen()
+        }
+
+        // TODO replace this url with the actual profile pic retrieved from firestore
+        Glide.with(this).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
     }
 }
