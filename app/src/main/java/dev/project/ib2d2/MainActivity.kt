@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var profilePic: ImageView
     private lateinit var editProfileButton: Button
     private lateinit var saveEditProfileButton: Button
+    private lateinit var profileTeamsButton: Button
+    private lateinit var profileBackButton: Button
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
@@ -164,12 +166,26 @@ class MainActivity : AppCompatActivity() {
         profileName.setText(globalUsername)
         profilePic = findViewById(R.id.profile_pic)
         editProfileButton = findViewById(R.id.edit_profile)
+        profileTeamsButton = findViewById(R.id.teams)
 
         editProfileButton.setOnClickListener {
             editProfileScreen()
         }
 
+        profileTeamsButton.setOnClickListener {
+            profileTeamScreen()
+        }
+
         // TODO replace this url with the actual profile pic retrieved from firestore
         Glide.with(this).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
+    }
+
+    private fun profileTeamScreen() {
+        setContentView(R.layout.profile_teams_layout)
+        profileBackButton = findViewById(R.id.profile_back)
+
+        profileBackButton.setOnClickListener {
+            profileScreen()
+        }
     }
 }

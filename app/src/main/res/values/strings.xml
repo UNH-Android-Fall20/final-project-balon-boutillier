@@ -36,4 +36,6 @@
     <string name="name">Name:</string>
     <string name="DoB">DoB:</string>
     <string name="pick">Pick</string>
+    <string name="create">Create</string>
+    <string name="join">Join</string>
 </resources>
