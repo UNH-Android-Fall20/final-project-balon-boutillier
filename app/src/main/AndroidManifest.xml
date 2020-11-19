@@ -14,8 +14,11 @@
         android:supportsRtl         ="true"
         android:theme               ="@style/AppTheme">
 
-        <!-- Activity tto control Navigation -->
+        <!-- Activity to control Navigation -->
         <activity android:name=".NavController"/>
+
+        <!-- Activity to control Example -->
+        <activity android:name=".ExampleActivity"/>
 
         <!-- Activity MainActivity -->
         <activity android:name=".MainActivity">

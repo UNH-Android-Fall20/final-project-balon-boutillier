@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import dev.project.ib2d2.R
 
-class SettingsFragment : Fragment() {
+class NewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tab_settings_layout, container, false)
+        return inflater.inflate(R.layout.tab_new_layout, container, false)
     }
 }

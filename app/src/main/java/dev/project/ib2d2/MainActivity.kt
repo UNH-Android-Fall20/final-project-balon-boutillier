@@ -32,46 +32,6 @@ class MainActivity : AppCompatActivity() {
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
-    /*
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when(item.itemId) {
-            R.id.page_1 -> {
-                bottomScreenChange(R.layout.files_layout)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.page_2 -> {
-                profileScreen()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.page_3 -> {
-                bottomScreenChange(R.layout.home_layout)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.page_4 -> {
-                bottomScreenChange(R.layout.settings_layout)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.page_5 -> {
-                /* moving to fragment instead of existing */
-                // toolbar.title = "About ib2d2"
-                // val aboutFragment = AboutFragment.newInstance()
-                // openFragment(aboutFragment)
-                val aboutFragment = AboutFragment()
-                setCurrentFragment(aboutFragment)
-                // bottomScreenChange(R.layout.about_layout)
-                return@OnNavigationItemSelectedListener true
-            }
-            else -> false
-        }
-    }
-
-    private fun setCurrentFragment(fragment: Fragment){
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.commit()
-    }
-    */
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")
-                    // bottomScreenChange(R.layout.home_layout)
+                    // bottomScreenChange(R.layout.tab_new_layout)
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
@@ -156,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                         val intent = Intent(this, NavController::class.java)
                         startActivity(intent)
 
-                        //bottomScreenChange(R.layout.home_layout)
+                        //bottomScreenChange(R.layout.tab_new_layout)
                     } else {
                         Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
                     }
@@ -170,14 +130,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Database is down sorry", Toast.LENGTH_SHORT).show()
             }
     }
-
-    /*
-    private fun bottomScreenChange(layout: Int) {
-        setContentView(layout)
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-    }
-    */
 
     private fun editProfileScreen() {
         setContentView(R.layout.profile_edit_layout)

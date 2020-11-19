@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.project.ib2d2.Fragments.AboutFragment
 import dev.project.ib2d2.Fragments.FilesFragment
+import dev.project.ib2d2.Fragments.NewFragment
 import dev.project.ib2d2.Fragments.SettingsFragment
 
 class NavController : AppCompatActivity() {
@@ -28,8 +29,9 @@ class NavController : AppCompatActivity() {
                 //profileScreen()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.page_3 -> {
-                //bottomScreenChange(R.layout.home_layout)
+            R.id.tab_new -> {
+                val newFragment = NewFragment()
+                setCurrentFragment(newFragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.tab_settings -> {
