@@ -4,16 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
-import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import android.content.Intent
-import kotlinx.android.synthetic.main.activity_main.*
+import android.content.SharedPreferences
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
     private val db = FirebaseFirestore.getInstance()
-
-    private var globalUsername: String = ""
 
     private lateinit var loginButton: Button
     private lateinit var usernameText: EditText
@@ -22,20 +19,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var signUpButton: Button
     private lateinit var confirmPasswordText: EditText
     private lateinit var registerBackButton: Button
-    private lateinit var profileName: TextView
-    private lateinit var profilePic: ImageView
-    private lateinit var editProfileButton: Button
-    private lateinit var saveEditProfileButton: Button
-    private lateinit var profileTeamsButton: Button
-    private lateinit var profileBackButton: Button
     private lateinit var rootLoginButton: Button
 
-    private var wrongPasswordUsername: String = "Incorrect username or password"
+    // Local persistent storage
+    private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
+    private var prefs: SharedPreferences? = null
 
+    private var wrongPasswordUsername: String = "Incorrect username or password"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        prefs = this.getSharedPreferences(PREFS_FILENAME, 0)
+
         loginScreen()
     }
 
@@ -92,11 +89,10 @@ class MainActivity : AppCompatActivity() {
             db.collection("users").document(username.text.toString()).set(testUser)
                 .addOnSuccessListener {
                     Log.d(TAG, "Document added")
-                    globalUsername = username.text.toString()
-                    username.setText("")
-                    password.setText("")
-                    confirmPassword.setText("")
-                    // bottomScreenChange(R.layout.tab_new_layout)
+
+                    // Automatically sign the user in after successful account creation
+                    Toast.makeText(this, "Account Created, Signing you in...", Toast.LENGTH_SHORT).show()
+                    signIn(username.text.toString(), password.text.toString())
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
@@ -111,7 +107,10 @@ class MainActivity : AppCompatActivity() {
                 if (user != null) {
                     Log.d(TAG, "${user.data}")
                     if (user.data?.get("password") == password) {
-                        globalUsername = username
+                        // Save the username of the person logging in locally
+                        var editor = prefs!!.edit()
+                        editor.putString("USERNAME", username)
+                        editor.apply()
 
                         val intent = Intent(this, NavController::class.java)
                         startActivity(intent)
@@ -129,43 +128,5 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "$exception")
                 Toast.makeText(this, "Database is down sorry", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    private fun editProfileScreen() {
-        setContentView(R.layout.profile_edit_layout)
-        saveEditProfileButton = findViewById(R.id.save_edit_profile)
-
-        saveEditProfileButton.setOnClickListener {
-            profileScreen()
-        }
-    }
-
-    private fun profileScreen() {
-        // bottomScreenChange(R.layout.profile_layout)
-        profileName = findViewById(R.id.profile_name)
-        profileName.setText(globalUsername)
-        profilePic = findViewById(R.id.profile_pic)
-        editProfileButton = findViewById(R.id.edit_profile)
-        profileTeamsButton = findViewById(R.id.teams)
-
-        editProfileButton.setOnClickListener {
-            editProfileScreen()
-        }
-
-        profileTeamsButton.setOnClickListener {
-            profileTeamScreen()
-        }
-
-        // TODO replace this url with the actual profile pic retrieved from firestore
-        Glide.with(this).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
-    }
-
-    private fun profileTeamScreen() {
-        setContentView(R.layout.profile_teams_layout)
-        profileBackButton = findViewById(R.id.profile_back)
-
-        profileBackButton.setOnClickListener {
-            profileScreen()
-        }
     }
 }

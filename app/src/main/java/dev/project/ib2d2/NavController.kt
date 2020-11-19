@@ -4,10 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dev.project.ib2d2.Fragments.AboutFragment
-import dev.project.ib2d2.Fragments.FilesFragment
-import dev.project.ib2d2.Fragments.NewFragment
-import dev.project.ib2d2.Fragments.SettingsFragment
+import dev.project.ib2d2.Fragments.*
 
 class NavController : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,6 +13,9 @@ class NavController : AppCompatActivity() {
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        val newFragment = NewFragment()
+        setCurrentFragment(newFragment)
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -26,7 +26,8 @@ class NavController : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.page_2 -> {
-                //profileScreen()
+                val profileFragment = ProfileFragment()
+                setCurrentFragment(profileFragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.tab_new -> {
