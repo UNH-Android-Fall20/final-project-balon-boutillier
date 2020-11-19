@@ -14,6 +14,12 @@
         android:supportsRtl         ="true"
         android:theme               ="@style/AppTheme">
 
+        <!-- Activity to control Navigation -->
+        <activity android:name=".NavController"/>
+
+        <!-- Activity to control Example -->
+        <activity android:name=".ExampleActivity"/>
+
         <!-- Activity MainActivity -->
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -22,5 +28,8 @@
             </intent-filter>
         </activity>
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/maps_api_key" />
     </application>
 </manifest>

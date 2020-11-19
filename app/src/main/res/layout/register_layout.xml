@@ -5,8 +5,6 @@
     android:gravity="center"
     android:orientation="vertical">
 
-
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,27 +26,26 @@
         android:hint="@string/password"
         android:inputType="textPassword" />
 
-    <Button
-        android:id="@+id/login_button"
+    <EditText
+        android:id="@+id/editText_confirmPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_button"
-        android:backgroundTint="@color/colorSecondary"
-        android:textColor="#ffffff" />
+        android:hint="@string/confirmPassword"
+        android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/createAccount_button"
+        android:id="@+id/signUp_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/createAccount"
+        android:text="@string/register"
         android:backgroundTint="@color/colorSecondary"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"/>
 
     <Button
-        android:id="@+id/rootLogin_button"
+        android:id="@+id/registerBack_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/rootLogin"
+        android:text="@string/back"
         android:backgroundTint="@color/colorSecondary"
         android:textColor="#ffffff" />
 
