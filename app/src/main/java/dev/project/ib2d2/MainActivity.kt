@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.content.Intent
 import androidx.fragment.app.Fragment
+import dev.project.ib2d2.Fragments.AboutFragment
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
+    /*
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when(item.itemId) {
             R.id.page_1 -> {
@@ -55,21 +57,30 @@ class MainActivity : AppCompatActivity() {
                 // toolbar.title = "About ib2d2"
                 // val aboutFragment = AboutFragment.newInstance()
                 // openFragment(aboutFragment)
-                bottomScreenChange(R.layout.about_layout)
+                val aboutFragment = AboutFragment()
+                setCurrentFragment(aboutFragment)
+                // bottomScreenChange(R.layout.about_layout)
                 return@OnNavigationItemSelectedListener true
             }
             else -> false
         }
     }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            loginScreen()
-        }
+    private fun setCurrentFragment(fragment: Fragment){
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.commit()
+    }
+    */
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        loginScreen()
+    }
 
     private fun loginScreen() {
-        setContentView(R.layout.activity_main)
-
         loginButton = findViewById(R.id.login_button)
         usernameText = findViewById(R.id.editText_username)
         passwordText = findViewById(R.id.editText_password)
@@ -120,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                     username.setText("")
                     password.setText("")
                     confirmPassword.setText("")
-                    bottomScreenChange(R.layout.home_layout)
+                    // bottomScreenChange(R.layout.home_layout)
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
@@ -136,7 +147,11 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "${user.data}")
                     if (user.data?.get("password") == password.text.toString()) {
                         globalUsername = username.text.toString()
-                        bottomScreenChange(R.layout.home_layout)
+
+                        val intent = Intent(this, NavActivity::class.java)
+                        startActivity(intent)
+
+                        //bottomScreenChange(R.layout.home_layout)
                     } else {
                         Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
                     }
@@ -151,18 +166,13 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    /*
     private fun bottomScreenChange(layout: Int) {
         setContentView(layout)
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
-
-    private fun openFragment(fragment: Fragment){
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
+    */
 
     private fun editProfileScreen() {
         setContentView(R.layout.profile_edit_layout)
@@ -174,7 +184,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun profileScreen() {
-        bottomScreenChange(R.layout.profile_layout)
+        // bottomScreenChange(R.layout.profile_layout)
         profileName = findViewById(R.id.profile_name)
         profileName.setText(globalUsername)
         profilePic = findViewById(R.id.profile_pic)
