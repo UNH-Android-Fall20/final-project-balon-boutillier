@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity() {
                 if (user != null) {
                     Log.d(TAG, "${user.data}")
                     if (user.data?.get("password") == password) {
+
                         // Save the username of the person logging in locally
                         var editor = prefs!!.edit()
                         editor.putString("USERNAME", username)
@@ -115,7 +116,6 @@ class MainActivity : AppCompatActivity() {
                         val intent = Intent(this, NavController::class.java)
                         startActivity(intent)
 
-                        //bottomScreenChange(R.layout.tab_new_layout)
                     } else {
                         Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
                     }

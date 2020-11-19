@@ -13,6 +13,6 @@ class NewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tab_new_layout, container, false)
+        return inflater.inflate(R.layout.new_tab, container, false)
     }
 }

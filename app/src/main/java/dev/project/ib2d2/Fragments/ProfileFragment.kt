@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import dev.project.ib2d2.R
 
 
@@ -31,10 +30,10 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        rootView =  inflater.inflate(R.layout.tab_profile_layout, container, false)
+        rootView =  inflater.inflate(R.layout.profile_tab, container, false)
 
         prefs = rootView.context.getSharedPreferences(PREFS_FILENAME, 0)
-
+        profileScreen()
         return rootView
     }
 
@@ -48,13 +47,13 @@ class ProfileFragment : Fragment() {
     }
 
     private fun profileScreen() {
-        // bottomScreenChange(R.layout.tab_profile_layout)
         profileName = rootView.findViewById(R.id.profile_name)
-        profileName.setText("TEST")
-        //profileName.setText(prefs?.getString("USERNAME", "<Username Holder>"))
         profilePic = rootView.findViewById(R.id.profile_pic)
         editProfileButton = rootView.findViewById(R.id.edit_profile)
         profileTeamsButton = rootView.findViewById(R.id.teams)
+
+
+        profileName.setText(prefs?.getString("USERNAME", "<Username Holder>"))
 
         editProfileButton.setOnClickListener {
             editProfileScreen()

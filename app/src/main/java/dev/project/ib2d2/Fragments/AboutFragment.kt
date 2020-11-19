@@ -25,7 +25,7 @@ class AboutFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.tab_about_layout, container, false)
+        val rootView = inflater.inflate(R.layout.about_tab, container, false)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         if (mapFragment != null) {
