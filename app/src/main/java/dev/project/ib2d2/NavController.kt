@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.project.ib2d2.Fragments.AboutFragment
 import dev.project.ib2d2.Fragments.FilesFragment
+import dev.project.ib2d2.Fragments.SettingsFragment
 
 class NavController : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,11 +32,12 @@ class NavController : AppCompatActivity() {
                 //bottomScreenChange(R.layout.home_layout)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.page_4 -> {
-                //bottomScreenChange(R.layout.settings_layout)
+            R.id.tab_settings -> {
+                val settingsFragment = SettingsFragment()
+                setCurrentFragment(settingsFragment)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.tab_about-> {
+            R.id.tab_about -> {
                 val aboutFragment = AboutFragment()
                 setCurrentFragment(aboutFragment)
                 return@OnNavigationItemSelectedListener true

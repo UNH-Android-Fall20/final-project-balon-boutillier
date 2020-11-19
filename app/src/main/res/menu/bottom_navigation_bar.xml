@@ -17,7 +17,7 @@
         android:icon="@drawable/plus"
         android:title="@string/newLabel"/>
     <item
-        android:id="@+id/page_4"
+        android:id="@+id/tab_settings"
         android:enabled="true"
         android:icon="@drawable/settings"
         android:title="@string/settings"/>
