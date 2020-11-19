@@ -15,7 +15,7 @@
         android:theme               ="@style/AppTheme">
 
         <!-- Activity tto control Navigation -->
-        <activity android:name=".NavActivity"/>
+        <activity android:name=".NavController"/>
 
         <!-- Activity MainActivity -->
         <activity android:name=".MainActivity">

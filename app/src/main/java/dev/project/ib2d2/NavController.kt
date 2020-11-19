@@ -7,7 +7,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.project.ib2d2.Fragments.AboutFragment
 import dev.project.ib2d2.Fragments.FilesFragment
 
-class NavActivity : AppCompatActivity() {
+class NavController : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)

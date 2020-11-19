@@ -6,10 +6,7 @@ import android.util.Log
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.content.Intent
-import androidx.fragment.app.Fragment
-import dev.project.ib2d2.Fragments.AboutFragment
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
@@ -148,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                     if (user.data?.get("password") == password.text.toString()) {
                         globalUsername = username.text.toString()
 
-                        val intent = Intent(this, NavActivity::class.java)
+                        val intent = Intent(this, NavController::class.java)
                         startActivity(intent)
 
                         //bottomScreenChange(R.layout.home_layout)
