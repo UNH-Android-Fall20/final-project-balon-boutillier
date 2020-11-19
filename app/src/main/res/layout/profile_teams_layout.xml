@@ -29,22 +29,4 @@
         android:text="@string/join"
         android:backgroundTint="@color/colorSecondary"
         android:textColor="#ffffff"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom">
-
-        <!--TODO find a better way with fragments-->
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:menu="@menu/bottom_navigation_bar"
-            app:backgroundTint="@color/colorPrimary"
-            app:itemTextColor="@android:color/white"
-            app:itemIconTint="@android:color/white"
-            app:labelVisibilityMode="labeled" />
-
-    </LinearLayout>
 </LinearLayout>

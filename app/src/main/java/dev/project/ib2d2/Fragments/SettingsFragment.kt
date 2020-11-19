@@ -13,6 +13,6 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.settings_Tab, container, false)
+        return inflater.inflate(R.layout.settings_tab, container, false)
     }
 }

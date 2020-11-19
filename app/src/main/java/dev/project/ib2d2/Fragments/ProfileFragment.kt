@@ -9,10 +9,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import dev.project.ib2d2.R
 
 
 class ProfileFragment : Fragment() {
+    private val TAG = javaClass.name
+
     private lateinit var profileName: TextView
     private lateinit var profilePic: ImageView
     private lateinit var editProfileButton: Button
@@ -32,20 +35,16 @@ class ProfileFragment : Fragment() {
     ): View? {
         rootView =  inflater.inflate(R.layout.profile_tab, container, false)
 
+        // Load stored preferences (data) on device
         prefs = rootView.context.getSharedPreferences(PREFS_FILENAME, 0)
+
         profileScreen()
         return rootView
     }
 
-    private fun editProfileScreen() {
-        // setContentView(R.layout.profile_edit_layout)
-        saveEditProfileButton = rootView.findViewById(R.id.save_edit_profile)
-
-        saveEditProfileButton.setOnClickListener {
-            profileScreen()
-        }
-    }
-
+    /**
+     * Spawn profileScreen and populate it
+     */
     private fun profileScreen() {
         profileName = rootView.findViewById(R.id.profile_name)
         profilePic = rootView.findViewById(R.id.profile_pic)
@@ -64,9 +63,20 @@ class ProfileFragment : Fragment() {
         }
 
         // TODO replace this url with the actual profile pic retrieved from firestore
-        // Glide.with(this).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
+        Glide.with(rootView.context).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
     }
 
+    // TODO : fix to work with new fragment system -TJ
+    private fun editProfileScreen() {
+        // setContentView(R.layout.profile_edit_layout)
+        saveEditProfileButton = rootView.findViewById(R.id.save_edit_profile)
+
+        saveEditProfileButton.setOnClickListener {
+            profileScreen()
+        }
+    }
+
+    // TODO : fix to work with new fragment system -TJ
     private fun profileTeamScreen() {
         //setContentView(R.layout.profile_teams_layout)
         profileBackButton = rootView.findViewById(R.id.profile_back)

@@ -31,11 +31,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Load stored preferences (data) on device
         prefs = this.getSharedPreferences(PREFS_FILENAME, 0)
 
         loginScreen()
     }
 
+    /**
+     * loginScreen(): Interface to login or create an account
+     */
     private fun loginScreen() {
         loginButton = findViewById(R.id.login_button)
         usernameText = findViewById(R.id.editText_username)
@@ -76,6 +80,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * signUp(): Creates an account for a new user
+     *
+     * @username EditText: User's username to login with
+     * @password EditText: User's password to login with
+     * @confirmPassword EditText: User's password confirmed
+     */
     private fun signUp(username: EditText, password: EditText, confirmPassword: EditText) {
 
         // TODO Passwords must always be hashed before being saved, this is for testing atm
@@ -101,6 +112,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * signIn(): Authenticates user to app
+     *
+     * @username String: User's username to login with
+     * @password String: User's password to login with
+     */
     private fun signIn(username: String, password: String) {
         db.collection("users").document(username).get()
             .addOnSuccessListener { user ->

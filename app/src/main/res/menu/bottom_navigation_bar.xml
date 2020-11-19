@@ -7,7 +7,7 @@
         android:icon="@drawable/document"
         android:title="@string/files"/>
     <item
-        android:id="@+id/page_2"
+        android:id="@+id/tab_profile"
         android:enabled="true"
         android:icon="@drawable/profile"
         android:title="@string/profile"/>

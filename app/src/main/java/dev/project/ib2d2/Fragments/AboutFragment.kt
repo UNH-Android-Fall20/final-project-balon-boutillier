@@ -27,12 +27,13 @@ class AboutFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         val rootView = inflater.inflate(R.layout.about_tab, container, false)
 
+        // Get the map fragment so we can override it
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         if (mapFragment != null) {
             mapFragment.getMapAsync(this)
         };
 
-        // Handle the "Facebook" button and go to that view
+        // Example to handle the "Facebook" button and go to that view
         facebookButton = rootView.findViewById(R.id.facebook)
         facebookButton.setOnClickListener {
             val intent = Intent(rootView.context, ExampleActivity::class.java)
@@ -42,6 +43,9 @@ class AboutFragment : Fragment(), OnMapReadyCallback {
         return rootView
     }
 
+    /**
+     * Overrides Google Map with specified Lat/Lng + Options
+     */
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap?.apply {
             val backBlazeDC = LatLng(38.595504, -121.272839)
