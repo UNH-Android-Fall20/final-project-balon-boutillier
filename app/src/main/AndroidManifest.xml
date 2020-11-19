@@ -14,6 +14,9 @@
         android:supportsRtl         ="true"
         android:theme               ="@style/AppTheme">
 
+        <!-- Activity AboutActivity -->
+        <!-- <activity android:name=".AboutActivity"/> -->
+
         <!-- Activity MainActivity -->
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -7,6 +7,8 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.content.Intent
+import androidx.fragment.app.Fragment
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
@@ -49,6 +51,10 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.page_5 -> {
+                /* moving to fragment instead of existing */
+                // toolbar.title = "About ib2d2"
+                // val aboutFragment = AboutFragment.newInstance()
+                // openFragment(aboutFragment)
                 bottomScreenChange(R.layout.about_layout)
                 return@OnNavigationItemSelectedListener true
             }
@@ -149,6 +155,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(layout)
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    private fun openFragment(fragment: Fragment){
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun editProfileScreen() {
