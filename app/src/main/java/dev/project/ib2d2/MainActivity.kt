@@ -7,6 +7,7 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import android.content.Intent
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var saveEditProfileButton: Button
     private lateinit var profileTeamsButton: Button
     private lateinit var profileBackButton: Button
+    private lateinit var rootLoginButton: Button
 
     private var wrongPasswordUsername: String = "Incorrect username or password"
 
@@ -82,9 +84,10 @@ class MainActivity : AppCompatActivity() {
         usernameText = findViewById(R.id.editText_username)
         passwordText = findViewById(R.id.editText_password)
         createAccountButton = findViewById(R.id.createAccount_button)
+        rootLoginButton = findViewById(R.id.rootLogin_button)
 
         loginButton.setOnClickListener {
-            signIn(usernameText, passwordText)
+            signIn(usernameText.text.toString(), passwordText.text.toString())
         }
 
         createAccountButton.setOnClickListener {
@@ -108,6 +111,11 @@ class MainActivity : AppCompatActivity() {
             registerBackButton.setOnClickListener {
                 loginScreen()
             }
+        }
+
+        /* Temporarily add a root login button to override having to sign in each time */
+        rootLoginButton.setOnClickListener {
+            signIn("test", "test")
         }
     }
 
@@ -137,13 +145,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun signIn(username: EditText, password: EditText) {
-        db.collection("users").document(username.text.toString()).get()
+    private fun signIn(username: String, password: String) {
+        db.collection("users").document(username).get()
             .addOnSuccessListener { user ->
                 if (user != null) {
                     Log.d(TAG, "${user.data}")
-                    if (user.data?.get("password") == password.text.toString()) {
-                        globalUsername = username.text.toString()
+                    if (user.data?.get("password") == password) {
+                        globalUsername = username
 
                         val intent = Intent(this, NavController::class.java)
                         startActivity(intent)

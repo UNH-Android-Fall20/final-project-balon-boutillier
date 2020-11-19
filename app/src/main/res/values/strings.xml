@@ -9,6 +9,7 @@
     <string name="login_button">Login</string>
     <string name="password">Password</string>
     <string name="createAccount">Create Account</string>
+    <string name="rootLogin">Root Login</string>
     <string name="confirmPassword">Confirm Password</string>
     <string name="register">Register</string>
     <string name="back">Back</string>
@@ -18,8 +19,7 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="about_ib2d2">About iB2D2</string>
-    <string name="backblaze_details">
-        <b>Powered by BackBlaze</b>, ib2d2 for Android is built on B2 Cloud Storage. B2 Cloud Storage is an
+    <string name="backblaze_details"><b>Powered by BackBlaze</b>, ib2d2 for Android is built on B2 Cloud Storage. B2 Cloud Storage is an
         affordable cloud storage solution that challenges the pricing and reliability of Amazon S3,
         Microsoft Azure, and Google Cloud. B2D2 was originally developed in Python as a tool to
         assist system administrators with backup management. ib2d2 for iOS was a wrapper of B2 which

@@ -32,13 +32,13 @@ class AboutFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap?.apply {
-            val sydney = LatLng(38.595504, -121.272839)
+            val backBlazeDC = LatLng(38.595504, -121.272839)
             addMarker(
                 MarkerOptions()
-                    .position(sydney)
+                    .position(backBlazeDC)
                     .title("BackBlaze Datacenter")
             )
-            moveCamera(CameraUpdateFactory.newLatLng(sydney))
+            moveCamera(CameraUpdateFactory.newLatLng(backBlazeDC))
         }
     }
 }
