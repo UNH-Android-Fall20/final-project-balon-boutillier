@@ -4,12 +4,125 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <!--This text view was for testing the bottom navigation bar-->
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="new" />
+        android:src="@drawable/ib2d2_logo" />
+
+    <Button
+        android:id="@+id/new_file_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/round_button"
+        android:text="@string/plus"
+        android:textSize="40sp"
+        android:textColor="#ffffff" />
+
+    <!-- TODO maybe the plus minus buttons can be switches -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cloud"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/cloud_minus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:text="@string/minus"
+            android:background="@color/colorSecondary"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
+
+        <Button
+            android:id="@+id/cloud_plus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:text="@string/plus"
+            android:background="@color/colorSecondary"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/backblaze"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/bb_minus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:text="@string/minus"
+            android:background="@color/colorSecondary"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
+
+        <Button
+            android:id="@+id/bb_plus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:text="@string/plus"
+            android:background="@color/colorSecondary"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/encrypt"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/encrypt_minus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:text="@string/minus"
+            android:background="@color/colorSecondary"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
+
+        <Button
+            android:id="@+id/encrypt_plus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:text="@string/plus"
+            android:background="@color/colorSecondary"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+
 </LinearLayout>

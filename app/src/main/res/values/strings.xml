@@ -43,4 +43,9 @@
     <string name="bucket">Bucket:</string>
     <string name="log">Log</string>
     <string name="reset">Reset</string>
+    <string name="cloud">Cloud</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="backblaze">BackBlaze</string>
+    <string name="encrypt">Encrypt</string>
 </resources>
