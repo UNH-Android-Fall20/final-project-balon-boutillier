@@ -43,8 +43,6 @@ class MainActivity : AppCompatActivity() {
         createAccountButton = findViewById(R.id.createAccount_button)
         rootLoginButton = findViewById(R.id.rootLogin_button)
 
-       // Log.v(TAG, "ATTEMPTING: $username, $password")
-
         // Send credentials to login
         loginButton.setOnClickListener {
             val username = (findViewById<EditText>(R.id.editText_username )).text.toString()
@@ -53,6 +51,7 @@ class MainActivity : AppCompatActivity() {
             signIn(username, password)
         }
 
+        // Prompt the user to create a new account
         createAccountButton.setOnClickListener {
             setContentView(R.layout.register_layout)
 
