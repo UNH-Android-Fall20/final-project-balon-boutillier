@@ -38,4 +38,9 @@
     <string name="pick">Pick</string>
     <string name="create">Create</string>
     <string name="join">Join</string>
+    <string name="acct_id">Acct ID:</string>
+    <string name="settings_key">Settings Key:</string>
+    <string name="bucket">Bucket:</string>
+    <string name="log">Log</string>
+    <string name="reset">Reset</string>
 </resources>
