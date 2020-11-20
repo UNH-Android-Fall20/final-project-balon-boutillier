@@ -13,8 +13,6 @@ class MainActivity : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
 
     private lateinit var loginButton: Button
-    private lateinit var usernameText: EditText
-    private lateinit var passwordText: EditText
     private lateinit var createAccountButton: Button
     private lateinit var signUpButton: Button
     private lateinit var confirmPasswordText: EditText
@@ -42,13 +40,17 @@ class MainActivity : AppCompatActivity() {
      */
     private fun loginScreen() {
         loginButton = findViewById(R.id.login_button)
-        usernameText = findViewById(R.id.editText_username)
-        passwordText = findViewById(R.id.editText_password)
         createAccountButton = findViewById(R.id.createAccount_button)
         rootLoginButton = findViewById(R.id.rootLogin_button)
 
+       // Log.v(TAG, "ATTEMPTING: $username, $password")
+
+        // Send credentials to login
         loginButton.setOnClickListener {
-            signIn(usernameText.text.toString(), passwordText.text.toString())
+            val username = (findViewById<EditText>(R.id.editText_username )).text.toString()
+            val password = (findViewById<EditText>(R.id.editText_password)).text.toString()
+
+            signIn(username, password)
         }
 
         createAccountButton.setOnClickListener {
@@ -56,19 +58,21 @@ class MainActivity : AppCompatActivity() {
 
             // TODO function to initialize the components in each layout
             signUpButton = findViewById(R.id.signUp_button)
-            confirmPasswordText = findViewById(R.id.editText_confirmPassword)
-            usernameText = findViewById(R.id.editText_username)
-            passwordText = findViewById(R.id.editText_password)
             registerBackButton = findViewById(R.id.registerBack_button)
 
             signUpButton.setOnClickListener {
-                if(confirmPasswordText.text.toString() == passwordText.text.toString()) {
-                    signUp(usernameText, passwordText, confirmPasswordText)
+                val username = (findViewById<EditText>(R.id.editText_username )).text.toString()
+                val password = (findViewById<EditText>(R.id.editText_password)).text.toString()
+                val confirmPassword = (findViewById<EditText>(R.id.editText_confirmPassword)).text.toString()
+
+                if(confirmPassword == password) {
+                    signUp(username, password, confirmPassword)
                 } else {
                     Toast.makeText(this, "Passwords need to match", Toast.LENGTH_SHORT).show()
                 }
             }
 
+            // TODO : back button crashes app zzzz
             registerBackButton.setOnClickListener {
                 loginScreen()
             }
@@ -87,23 +91,23 @@ class MainActivity : AppCompatActivity() {
      * @password EditText: User's password to login with
      * @confirmPassword EditText: User's password confirmed
      */
-    private fun signUp(username: EditText, password: EditText, confirmPassword: EditText) {
+    private fun signUp(username: String, password: String, confirmPassword: String) {
 
         // TODO Passwords must always be hashed before being saved, this is for testing atm
-        if(username.text.toString() != "" && password.text.toString() != "" ) {
+        if(username.isNotEmpty() && password.isNotEmpty() ) {
             val testUser = hashMapOf(
-                "username" to username.text.toString(),
-                "password" to password.text.toString(),
+                "username" to username,
+                "password" to password,
             )
 
             // TODO check if username is unique
-            db.collection("users").document(username.text.toString()).set(testUser)
+            db.collection("users").document(username).set(testUser)
                 .addOnSuccessListener {
                     Log.d(TAG, "Document added")
 
                     // Automatically sign the user in after successful account creation
                     Toast.makeText(this, "Account Created, Signing you in...", Toast.LENGTH_SHORT).show()
-                    signIn(username.text.toString(), password.text.toString())
+                    signIn(username, password)
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding document", e)
@@ -130,6 +134,7 @@ class MainActivity : AppCompatActivity() {
                         editor.putString("USERNAME", username)
                         editor.apply()
 
+                        // Spawn the NavController after successful authentication
                         val intent = Intent(this, NavController::class.java)
                         startActivity(intent)
 
