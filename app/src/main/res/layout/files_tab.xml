@@ -8,9 +8,9 @@
     android:orientation="vertical">
 
     <!--This text view was for testing the bottom navigation bar-->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="files" />
+    <ListView
+        android:id="@+id/files_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
