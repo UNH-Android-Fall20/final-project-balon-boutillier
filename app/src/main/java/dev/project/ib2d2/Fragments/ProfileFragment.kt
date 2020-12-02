@@ -66,23 +66,14 @@ class ProfileFragment : Fragment() {
         Glide.with(rootView.context).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
     }
 
-    // TODO : fix to work with new fragment system -TJ
     private fun editProfileScreen() {
         // setContentView(R.layout.profile_edit_layout)
-        saveEditProfileButton = rootView.findViewById(R.id.save_edit_profile)
-
-        saveEditProfileButton.setOnClickListener {
-            profileScreen()
-        }
+        fragmentManager?.beginTransaction()?.replace(R.id.container, ProfileEditFragment())?.commit()
     }
 
     // TODO : fix to work with new fragment system -TJ
     private fun profileTeamScreen() {
         //setContentView(R.layout.profile_teams_layout)
-        profileBackButton = rootView.findViewById(R.id.profile_back)
-
-        profileBackButton.setOnClickListener {
-            profileScreen()
-        }
+        fragmentManager?.beginTransaction()?.replace(R.id.container, ProfileTeamsFragment())?.commit()
     }
 }
