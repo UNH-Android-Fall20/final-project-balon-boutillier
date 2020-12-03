@@ -28,9 +28,18 @@ class CreateTeamsFragment : Fragment() {
 
         teamCodeText = rootView.findViewById(R.id.team_code)
 
-        // TODO make the team code random
-        teamCodeText.text = "change to random"
+        val source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val teamCode = getRandomString()
+
+        teamCodeText.text = teamCode
 
         return rootView
+    }
+
+    private fun getRandomString() : String {
+        val allowedChars = ('A'..'Z') + ('0'..'9')
+        return (1..5)
+            .map { allowedChars.random() }
+            .joinToString("")
     }
 }
