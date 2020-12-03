@@ -31,4 +31,11 @@
         android:text="@string/join"
         android:backgroundTint="@color/colorSecondary"
         android:textColor="#ffffff"/>
+    <Button
+        android:id="@+id/profile_list_teams_nav_button"
+        android:layout_width="200sp"
+        android:layout_height="wrap_content"
+        android:text="@string/list_existing"
+        android:backgroundTint="@color/colorSecondary"
+        android:textColor="#ffffff"/>
 </LinearLayout>

@@ -49,4 +49,5 @@
     <string name="backblaze">BackBlaze</string>
     <string name="encrypt">Encrypt</string>
     <string name="team_code">Team Code:</string>
+    <string name="list_existing">List existing teams</string>
 </resources>
