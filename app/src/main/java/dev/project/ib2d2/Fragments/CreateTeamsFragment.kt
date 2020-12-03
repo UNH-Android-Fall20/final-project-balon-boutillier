@@ -53,7 +53,7 @@ class CreateTeamsFragment : Fragment() {
                 "teamCode" to teamCode,
                 "teamMembers" to teamMembers
             )
-            db.collection("teams").document(teamName).set(team)
+            db.collection("teams").document(teamCode).set(team)
                 .addOnSuccessListener {
                     Log.d(TAG, "Team added")
                     fragmentManager?.beginTransaction()?.replace(R.id.container, ProfileFragment())?.commit()

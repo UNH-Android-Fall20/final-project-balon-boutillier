@@ -25,6 +25,7 @@
         android:textColor="#ffffff"/>
 
     <Button
+        android:id="@+id/profile_join_nav_button"
         android:layout_width="200sp"
         android:layout_height="wrap_content"
         android:text="@string/join"
