@@ -16,6 +16,7 @@ class ProfileTeamsFragment : Fragment() {
     private lateinit var profileBackButton: Button
     private lateinit var createProfileNavButton: Button
     private lateinit var joinProfileNavButton: Button
+    private lateinit var listTeamsNavButton: Button
 
     // Local persistent storage
     private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
@@ -34,6 +35,7 @@ class ProfileTeamsFragment : Fragment() {
         profileBackButton = rootView.findViewById(R.id.profile_back)
         createProfileNavButton = rootView.findViewById(R.id.profile_create_nav_button)
         joinProfileNavButton = rootView.findViewById(R.id.profile_join_nav_button)
+        listTeamsNavButton = rootView.findViewById(R.id.profile_list_teams_nav_button)
 
         profileBackButton.setOnClickListener {
             fragmentManager?.beginTransaction()?.replace(R.id.container, ProfileFragment())?.commit()
@@ -45,6 +47,10 @@ class ProfileTeamsFragment : Fragment() {
 
         joinProfileNavButton.setOnClickListener {
             fragmentManager?.beginTransaction()?.replace(R.id.container, JoinTeamsFragment())?.commit()
+        }
+
+        listTeamsNavButton.setOnClickListener {
+            fragmentManager?.beginTransaction()?.replace(R.id.container, ListTeamFragment())?.commit()
         }
 
         return rootView
