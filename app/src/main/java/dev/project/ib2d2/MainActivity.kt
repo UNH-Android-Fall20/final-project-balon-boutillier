@@ -7,11 +7,17 @@ import android.widget.*
 import com.google.firebase.firestore.FirebaseFirestore
 import android.content.Intent
 import android.content.SharedPreferences
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
     private val db = FirebaseFirestore.getInstance()
 
+    private lateinit var auth: FirebaseAuth
     private lateinit var loginButton: Button
     private lateinit var createAccountButton: Button
     private lateinit var signUpButton: Button
@@ -31,48 +37,66 @@ class MainActivity : AppCompatActivity() {
         // Load stored preferences (data) on device
         prefs = this.getSharedPreferences(PREFS_FILENAME, 0)
 
+        // initiate Firebase Auth
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        val userid = currentUser?.uid
+
+        if(currentUser != null) {
+            Log.d(TAG, "attempting session based sign-in")
+            Log.d(TAG, "${currentUser} : ${userid}")
+
+            auth.signOut()
+        } else {
+            Log.d(TAG, "no user found")
+        }
+
         loginScreen()
     }
 
     /**
      * loginScreen(): Interface to login or create an account
+     *      - sanitizes input before function calls
+     *      - formats data before function calls
      */
     private fun loginScreen() {
         loginButton = findViewById(R.id.login_button)
         createAccountButton = findViewById(R.id.createAccount_button)
         rootLoginButton = findViewById(R.id.rootLogin_button)
 
-        // Send credentials to login
+        // handle: loginButton (send to login screen)
         loginButton.setOnClickListener {
-            val username = (findViewById<EditText>(R.id.editText_username )).text.toString()
+            val email = (findViewById<EditText>(R.id.editText_email)).text.toString()
             val password = (findViewById<EditText>(R.id.editText_password)).text.toString()
 
-            signIn(username, password)
+            signIn(email, password)
         }
 
-        // Prompt the user to create a new account
+        // handle: createAccount (prompt the user to create a new account)
         createAccountButton.setOnClickListener {
             setContentView(R.layout.register_layout)
 
-            // TODO function to initialize the components in each layout
             signUpButton = findViewById(R.id.signUp_button)
             registerBackButton = findViewById(R.id.registerBack_button)
 
             signUpButton.setOnClickListener {
-                val username = (findViewById<EditText>(R.id.editText_username)).text.toString()
-                val password = (findViewById<EditText>(R.id.editText_password)).text.toString()
-                val confirmPassword = (findViewById<EditText>(R.id.editText_confirmPassword)).text.toString()
+                val email = (findViewById<EditText>(R.id.editText_email))?.text.toString()
+                val password = (findViewById<EditText>(R.id.editText_password))?.text.toString()
+                val confirmPassword = (findViewById<EditText>(R.id.editText_confirmPassword))?.text.toString()
 
-                if(confirmPassword == password) {
-                    signUpLegacy(username, password, confirmPassword)
-                } else {
-                    Toast.makeText(this, "Passwords need to match", Toast.LENGTH_SHORT).show()
+                when {
+                    (email.isBlank()) -> Toast.makeText(this, "Error: Email cannot be blank", Toast.LENGTH_SHORT).show()
+                    (password.isBlank()) -> Toast.makeText(this, "Error: Password cannot be blank", Toast.LENGTH_SHORT).show()
+                    (confirmPassword.isBlank()) -> Toast.makeText(this, "Error: Confirmation Password cannot be blank", Toast.LENGTH_SHORT).show()
+                    (password != confirmPassword) -> Toast.makeText(this, "Error: Passwords must match", Toast.LENGTH_SHORT).show()
+                    else -> {
+                        signUp(email, password, confirmPassword)
+                    }
                 }
             }
 
-            // app is crashing because we call loginScreen() without reloading intent
-            // TODO : back button crashes app zzzz
             registerBackButton.setOnClickListener {
+                setContentView(R.layout.activity_main)
                 loginScreen()
             }
         }
@@ -92,8 +116,20 @@ class MainActivity : AppCompatActivity() {
      */
     private fun signUp(email: String, password: String, confirmPassword: String){
 
+        Log.d(TAG, "Email: ${email}, Password: ${password}")
 
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "successfully created a new user")
+                } else {
+                    when (task.exception){
+                        is FirebaseAuthWeakPasswordException -> Log.w(TAG, "weak PW bruh")
 
+                    }
+                    Log.w(TAG, "failed to create a new user: ${task.exception}")
+                }
+            }
     }
 
 
@@ -146,10 +182,7 @@ class MainActivity : AppCompatActivity() {
                         editor.putString("USERNAME", username)
                         editor.apply()
 
-                        // Spawn the NavController after successful authentication
-                        val intent = Intent(this, NavController::class.java)
-                        startActivity(intent)
-
+                        postAuthenticationSuccess()
                     } else {
                         Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
                     }
@@ -162,5 +195,15 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "$exception")
                 Toast.makeText(this, "Database is down sorry", Toast.LENGTH_SHORT).show()
             }
+    }
+
+
+    /**
+     * postAuthenticationSuccess(): start nav bar and app
+     */
+    private fun postAuthenticationSuccess(){
+        // Spawn the NavController after successful authentication
+        val intent = Intent(this, NavController::class.java)
+        startActivity(intent)
     }
 }
