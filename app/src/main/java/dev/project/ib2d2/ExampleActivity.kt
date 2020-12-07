@@ -14,15 +14,16 @@ class ExampleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.example_layout)
 
-
         val mTopToolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(mTopToolbar)
+        setTitle("test")
 
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
 
         mTopToolbar.setNavigationOnClickListener{
             super.onBackPressed()
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 }

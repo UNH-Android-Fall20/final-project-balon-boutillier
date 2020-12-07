@@ -1,11 +1,14 @@
 package dev.project.ib2d2.Fragments
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,8 +39,10 @@ class AboutFragment : Fragment(), OnMapReadyCallback {
         // Example to handle the "Facebook" button and go to that view
         facebookButton = rootView.findViewById(R.id.facebook)
         facebookButton.setOnClickListener {
+            // spawn intent and customize animations
             val intent = Intent(rootView.context, ExampleActivity::class.java)
-            startActivity(intent)
+            val options = ActivityOptions.makeCustomAnimation(rootView.context, R.anim.right_in, R.anim.left_out)
+            startActivity(intent, options.toBundle())
         }
 
         return rootView

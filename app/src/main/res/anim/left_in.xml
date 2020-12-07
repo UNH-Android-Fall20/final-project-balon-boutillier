@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    animation: left_in
+    desc: slide activity in from left, use with right_out
+    source: https://stackoverflow.com/a/36982235
+    retrieved: 12/07/2020
+-->
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="300"
+    android:fromXDelta="-100%"
+    android:toXDelta="0%"
+    android:interpolator="@android:anim/decelerate_interpolator"
+    />

@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            // app is crashing because we call loginScreen() without reloading intent
             // TODO : back button crashes app zzzz
             registerBackButton.setOnClickListener {
                 loginScreen()
