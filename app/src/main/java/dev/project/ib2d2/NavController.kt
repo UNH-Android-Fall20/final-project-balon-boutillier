@@ -11,13 +11,18 @@ class NavController : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        // Create bottom nav
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
+        // Call default fragment upon NavController() being executed
         val newFragment = NewFragment()
         setCurrentFragment(newFragment)
     }
 
+    /**
+     * Handle actions on the bottom nav bar
+     */
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when(item.itemId) {
             R.id.tab_files -> {
@@ -25,7 +30,7 @@ class NavController : AppCompatActivity() {
                 setCurrentFragment(filesFragment)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.page_2 -> {
+            R.id.tab_profile -> {
                 val profileFragment = ProfileFragment()
                 setCurrentFragment(profileFragment)
                 return@OnNavigationItemSelectedListener true
@@ -49,6 +54,10 @@ class NavController : AppCompatActivity() {
         }
     }
 
+    /**
+     * setCurrentFragment(): fill container with fragment
+     * @fragment Fragment: the fragment to switch to
+     */
     private fun setCurrentFragment(fragment: Fragment){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment)

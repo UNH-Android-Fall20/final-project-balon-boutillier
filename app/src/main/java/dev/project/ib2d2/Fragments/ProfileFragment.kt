@@ -14,6 +14,8 @@ import dev.project.ib2d2.R
 
 
 class ProfileFragment : Fragment() {
+    private val TAG = javaClass.name
+
     private lateinit var profileName: TextView
     private lateinit var profilePic: ImageView
     private lateinit var editProfileButton: Button
@@ -31,30 +33,26 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        rootView =  inflater.inflate(R.layout.tab_profile_layout, container, false)
+        rootView =  inflater.inflate(R.layout.profile_tab, container, false)
 
+        // Load stored preferences (data) on device
         prefs = rootView.context.getSharedPreferences(PREFS_FILENAME, 0)
 
+        profileScreen()
         return rootView
     }
 
-    private fun editProfileScreen() {
-        // setContentView(R.layout.profile_edit_layout)
-        saveEditProfileButton = rootView.findViewById(R.id.save_edit_profile)
-
-        saveEditProfileButton.setOnClickListener {
-            profileScreen()
-        }
-    }
-
+    /**
+     * Spawn profileScreen and populate it
+     */
     private fun profileScreen() {
-        // bottomScreenChange(R.layout.tab_profile_layout)
         profileName = rootView.findViewById(R.id.profile_name)
-        profileName.setText("TEST")
-        //profileName.setText(prefs?.getString("USERNAME", "<Username Holder>"))
         profilePic = rootView.findViewById(R.id.profile_pic)
         editProfileButton = rootView.findViewById(R.id.edit_profile)
         profileTeamsButton = rootView.findViewById(R.id.teams)
+
+        profileName.setText(prefs?.getString("USERNAME", "<Username Holder>"))
+
 
         editProfileButton.setOnClickListener {
             editProfileScreen()
@@ -65,15 +63,17 @@ class ProfileFragment : Fragment() {
         }
 
         // TODO replace this url with the actual profile pic retrieved from firestore
-        // Glide.with(this).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
+        Glide.with(rootView.context).load("https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg").into(profilePic)
     }
 
+    private fun editProfileScreen() {
+        // setContentView(R.layout.profile_edit_layout)
+        fragmentManager?.beginTransaction()?.replace(R.id.container, ProfileEditFragment())?.commit()
+    }
+
+    // TODO : fix to work with new fragment system -TJ
     private fun profileTeamScreen() {
         //setContentView(R.layout.profile_teams_layout)
-        profileBackButton = rootView.findViewById(R.id.profile_back)
-
-        profileBackButton.setOnClickListener {
-            profileScreen()
-        }
+        fragmentManager?.beginTransaction()?.replace(R.id.container, ProfileTeamsFragment())?.commit()
     }
 }

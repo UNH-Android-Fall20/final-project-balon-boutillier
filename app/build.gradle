@@ -65,6 +65,8 @@ android {
 
 // App Libraries//
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore:21.7.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.core:core-ktx:1.3.1'

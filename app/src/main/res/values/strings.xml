@@ -38,4 +38,17 @@
     <string name="pick">Pick</string>
     <string name="create">Create</string>
     <string name="join">Join</string>
+    <string name="acct_id">Acct ID:</string>
+    <string name="settings_key">Settings Key:</string>
+    <string name="bucket">Bucket:</string>
+    <string name="log">Log</string>
+    <string name="reset">Reset</string>
+    <string name="cloud">Cloud</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="backblaze">BackBlaze</string>
+    <string name="encrypt">Encrypt</string>
+    <string name="team_code">Team Code:</string>
+    <string name="list_existing">List existing teams</string>
+    <string name="team_share">Team Share</string>
 </resources>
