@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var createAccountButton: Button
     private lateinit var signUpButton: Button
-    private lateinit var confirmPasswordText: EditText
     private lateinit var registerBackButton: Button
     private lateinit var rootLoginButton: Button
 
@@ -60,12 +59,12 @@ class MainActivity : AppCompatActivity() {
             registerBackButton = findViewById(R.id.registerBack_button)
 
             signUpButton.setOnClickListener {
-                val username = (findViewById<EditText>(R.id.editText_username )).text.toString()
+                val username = (findViewById<EditText>(R.id.editText_username)).text.toString()
                 val password = (findViewById<EditText>(R.id.editText_password)).text.toString()
                 val confirmPassword = (findViewById<EditText>(R.id.editText_confirmPassword)).text.toString()
 
                 if(confirmPassword == password) {
-                    signUp(username, password, confirmPassword)
+                    signUpLegacy(username, password, confirmPassword)
                 } else {
                     Toast.makeText(this, "Passwords need to match", Toast.LENGTH_SHORT).show()
                 }
@@ -86,12 +85,25 @@ class MainActivity : AppCompatActivity() {
     /**
      * signUp(): Creates an account for a new user
      *
+     * @email EditText: User's email to login with
+     * @password EditText: User's password to login with
+     * @confirmPassword EditText: User's password confirmed
+     */
+    private fun signUp(email: String, password: String, confirmPassword: String){
+
+
+
+    }
+
+
+    /**
+     * signUpLegacy(): Creates an account for a new user
+     * - old method for creating user accounts
      * @username EditText: User's username to login with
      * @password EditText: User's password to login with
      * @confirmPassword EditText: User's password confirmed
      */
-    private fun signUp(username: String, password: String, confirmPassword: String) {
-
+    private fun signUpLegacy(username: String, password: String, confirmPassword: String) {
         // TODO Passwords must always be hashed before being saved, this is for testing atm
         if(username.isNotEmpty() && password.isNotEmpty() ) {
             val testUser = hashMapOf(
