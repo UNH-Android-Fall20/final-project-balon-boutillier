@@ -28,8 +28,6 @@ class MainActivity : AppCompatActivity() {
     private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
     private var prefs: SharedPreferences? = null
 
-    private var wrongPasswordUsername: String = "Incorrect username or password"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

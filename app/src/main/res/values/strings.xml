@@ -43,7 +43,7 @@
     <string name="settings_key">Settings Key:</string>
     <string name="bucket">Bucket:</string>
     <string name="log">Log</string>
-    <string name="reset">Reset</string>
+    <string name="logout">Log Out</string>
     <string name="cloud">Cloud</string>
     <string name="plus">+</string>
     <string name="minus">-</string>
