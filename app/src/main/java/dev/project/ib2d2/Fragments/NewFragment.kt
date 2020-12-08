@@ -70,7 +70,7 @@ class NewFragment : Fragment() {
             requestPermissions(arrayOf(permission), requestCode)
 
             // check recursively if we have permission or not
-            checkAppPermissions(permission, permissionText, requestCode)
+            // checkAppPermissions(permission, permissionText, requestCode)
             return true
         } else {
             Log.d(TAG, "Success: User has permission to the ${permissionText}")
