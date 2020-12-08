@@ -18,11 +18,11 @@ class MainActivity : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var loginButton: Button
-    private lateinit var registerButton: Button
-    private lateinit var signUpButton: Button
-    private lateinit var registerBackButton: Button
-    private lateinit var rootLoginButton: Button
+    private lateinit var b_login: Button
+    private lateinit var b_register: Button
+    private lateinit var b_doRegister: Button
+    private lateinit var b_cancelRegister: Button
+    private lateinit var b_rootLogin: Button
 
     // Local persistent storage
     private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
@@ -46,12 +46,12 @@ class MainActivity : AppCompatActivity() {
 
             if (currentUser.uid == savedUserID) {
                 // we have user data! no need to log in again
-                Log.d(TAG, "Signed in user ${currentUser.uid}")
+                Log.v(TAG, "Signed in user ${currentUser.uid}")
                 Toast.makeText(this, "$savedUserDN auto signed in...", Toast.LENGTH_SHORT).show()
                 postAuthenticationSuccess()
             } else {
                 // report failed session start, send to login handler
-                Log.d(TAG, "UID Mis-match, signing the user out...")
+                Log.v(TAG, "UID Mis-match, signing the user out...")
                 Toast.makeText(this, "Session signed out, please login again", Toast.LENGTH_SHORT).show()
                 auth.signOut()
 
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 loginHandler()
             }
         } else {
-            Log.d(TAG, "No user found, sending to loginHandler()")
+            Log.v(TAG, "No user found, sending to loginHandler()")
             loginHandler()
         }
     }
@@ -71,12 +71,12 @@ class MainActivity : AppCompatActivity() {
      *  - formats data before function calls
      */
     private fun loginHandler() {
-        loginButton = findViewById(R.id.login_button)
-        registerButton = findViewById(R.id.createAccount_button)
-        rootLoginButton = findViewById(R.id.rootLogin_button)
+        b_login = findViewById(R.id.login_button)
+        b_register = findViewById(R.id.createAccount_button)
+        b_rootLogin = findViewById(R.id.rootLogin_button)
 
         // handle: loginButton (send to login screen)
-        loginButton.setOnClickListener {
+        b_login.setOnClickListener {
             val email = (findViewById<EditText>(R.id.editText_email)).text.toString()
             val password = (findViewById<EditText>(R.id.editText_password)).text.toString()
 
@@ -92,13 +92,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         // handle: registerAccount (prompt the user to create a new account)
-        registerButton.setOnClickListener {
+        b_register.setOnClickListener {
             setContentView(R.layout.register_layout)
 
-            signUpButton = findViewById(R.id.signUp_button)
-            registerBackButton = findViewById(R.id.registerBack_button)
+            b_doRegister = findViewById(R.id.signUp_button)
+            b_cancelRegister = findViewById(R.id.registerBack_button)
 
-            signUpButton.setOnClickListener {
+            b_doRegister.setOnClickListener {
                 val email = (findViewById<EditText>(R.id.editText_email))?.text.toString()
                 val password = (findViewById<EditText>(R.id.editText_password))?.text.toString()
                 val confirmPassword = (findViewById<EditText>(R.id.editText_confirmPassword))?.text.toString()
@@ -117,14 +117,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             // sub-handle: go back to main login
-            registerBackButton.setOnClickListener {
+            b_cancelRegister.setOnClickListener {
                 setContentView(R.layout.activity_main)
                 loginHandler()
             }
         }
 
         /* Temporarily add a root login button to override having to sign in each time */
-        rootLoginButton.setOnClickListener {
+        b_rootLogin.setOnClickListener {
            loginUser("admin@b2d2.dev", "password123")
         }
     }
@@ -136,14 +136,14 @@ class MainActivity : AppCompatActivity() {
      * @password String: User's password to login with
      */
     private fun registerUser(email: String, password: String) {
-        Log.d(TAG, "Email: ${email}, Password: ${password}")
+        // create a new user in firebase authenticate
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d(TAG, "successfully created a new user: ${email}")
+                    Log.v(TAG, "successfully created a new user: ${email}")
                     val userID = auth.currentUser?.uid
                     if (userID != null) {
-                        Log.w(TAG, "Creating collection for  ${userID}, and signing them in")
+                        Log.v(TAG, "Creating collection for  ${userID}, and signing them in")
                         postRegisterAddToCollection(userID, email)
                         loginUser(email, password)
                     } else {
@@ -170,20 +170,19 @@ class MainActivity : AppCompatActivity() {
      * @password String: User's password to login with
      */
     private fun loginUser(email: String, password: String) {
-        Log.d(TAG, "Email: ${email}, Password: ${password}")
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d(TAG, "User ${email} signed in successfully")
+                    Log.v(TAG, "User ${email} signed in successfully")
                     val userID = auth.currentUser?.uid
                     if (userID != null) {
                         // get the users collection data
                         val userData = db.collection("users").document(userID)
-                        Log.d(TAG, "Retrieving collection data for ${userID}")
+                        Log.v(TAG, "Retrieving collection data for ${userID}")
                         userData.get()
                             .addOnSuccessListener { doc ->
                                 if (doc != null){
-                                    Log.d(TAG, "Document retrieved: ${doc.data}")
+                                    Log.v(TAG, "Document retrieved: ${doc.data}")
 
                                     // save it to our local prefs
                                     var editor = prefs!!.edit()
@@ -192,16 +191,16 @@ class MainActivity : AppCompatActivity() {
                                     editor.putString("EMAILADDR", doc.data?.get("emailAddress") as String?)
                                     editor.apply()
                                 } else {
-                                    Log.d(TAG, "Failed to retrieve user information from collection")
+                                    Log.w(TAG, "Failed to retrieve user information from collection")
                                 }
                             }
                     } else {
-                        Log.d(TAG, "Failed to retrieve user information from login")
+                        Log.w(TAG, "Failed to retrieve user information from login")
                     }
                     // now we are signed in, show them the app
                     postAuthenticationSuccess()
                 } else {
-                    Log.d(TAG, "Users ${email} failed to login because of reason: ${task.exception}")
+                    Log.w(TAG, "Users ${email} failed to login because of reason: ${task.exception}")
                     Toast.makeText(this, "Error: Invalid Email/Password ", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -243,10 +242,10 @@ class MainActivity : AppCompatActivity() {
         db.collection("users").document(userID)
             .set(newUser)
             .addOnSuccessListener { task ->
-                Log.d(TAG, "User ${email} successfully added to collection: ${task}")
+                Log.v(TAG, "User ${email} successfully added to collection: ${task}")
             }
             .addOnFailureListener { task ->
-                Log.d(TAG, "Failed to add user ${email} to collection due to reason: ${task}")
+                Log.w(TAG, "Failed to add user ${email} to collection due to reason: ${task}")
             }
     }
 }
