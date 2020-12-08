@@ -42,15 +42,28 @@ class MainActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
 
         if(currentUser != null) {
-            Log.d(TAG, "attempting session based sign-in")
-            Log.d(TAG, "${currentUser} : ${currentUser.uid}")
+            // get the user data from our prefs from last sign-in
+            val savedUserID = prefs?.getString("USERID", null)
+            val savedUserDN = prefs?.getString("DISPLAYNAME", null)
 
-            auth.signOut()
+            if (currentUser.uid == savedUserID) {
+                // we have user data! no need to log in again
+                Log.d(TAG, "Signed in user ${currentUser.uid}")
+                Toast.makeText(this, "$savedUserDN auto signed in...", Toast.LENGTH_SHORT).show()
+                postAuthenticationSuccess()
+            } else {
+                // report failed session start, send to login handler
+                Log.d(TAG, "UID Mis-match, signing the user out...")
+                Toast.makeText(this, "Session signed out, please login again", Toast.LENGTH_SHORT).show()
+                auth.signOut()
+
+                // send user to login handler
+                loginHandler()
+            }
         } else {
-            Log.d(TAG, "no user found")
+            Log.d(TAG, "No user found, sending to loginHandler()")
+            loginHandler()
         }
-
-        loginHandler()
     }
 
     /**
@@ -114,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
         /* Temporarily add a root login button to override having to sign in each time */
         rootLoginButton.setOnClickListener {
-            signInLegacy("test", "test")
+           loginUser("admin@b2d2.dev", "password123")
         }
     }
 
@@ -130,15 +143,22 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "successfully created a new user: ${email}")
-                    loginUser(email, password)
+                    val userID = auth.currentUser?.uid
+                    if (userID != null) {
+                        Log.w(TAG, "Creating collection for  ${userID}, and signing them in")
+                        postRegisterAddToCollection(userID, email)
+                        loginUser(email, password)
+                    } else {
+                        Log.w(TAG, "Variable: userID was null before collection creation")
+                    }
                 } else {
                     when (task.exception) {
                         is FirebaseAuthWeakPasswordException -> Toast.makeText(this, "Error: Password must be 6 characters", Toast.LENGTH_SHORT).show()
                         is FirebaseAuthInvalidCredentialsException -> Toast.makeText(this, "Error: Invalid email address specified", Toast.LENGTH_SHORT).show()
                         is FirebaseAuthUserCollisionException -> Toast.makeText(this, "Error: User already exists with that email", Toast.LENGTH_SHORT).show()
                         else -> {
-                            Toast.makeText(this, "Error: Unknown error occured, contact the developer", Toast.LENGTH_SHORT).show()
-                            Log.w(TAG, "Unhandled error occured: ${task.exception}")
+                            Toast.makeText(this, "Error: Unknown error occurred, contact the developer", Toast.LENGTH_SHORT).show()
+                            Log.w(TAG, "Unhandled error occurred: ${task.exception}")
                         }
                     }
                 }
@@ -156,10 +176,35 @@ class MainActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d(TAG, "successfully created a new user")
+                    Log.d(TAG, "User ${email} signed in successfully")
+                    val userID = auth.currentUser?.uid
+                    if (userID != null) {
+                        // get the users collection data
+                        val userData = db.collection("users").document(userID)
+                        Log.d(TAG, "Retrieving collection data for ${userID}")
+                        userData.get()
+                            .addOnSuccessListener { doc ->
+                                if (doc != null){
+                                    Log.d(TAG, "Document retrieved: ${doc.data}")
+
+                                    // save it to our local prefs
+                                    var editor = prefs!!.edit()
+                                    editor.putString("USERID", doc.data?.get("userID") as String?)
+                                    editor.putString("DISPLAYNAME", doc.data?.get("displayName") as String?)
+                                    editor.putString("EMAILADDR", doc.data?.get("emailAddress") as String?)
+                                    editor.apply()
+                                } else {
+                                    Log.d(TAG, "Failed to retrieve user information from collection")
+                                }
+                            }
+                    } else {
+                        Log.d(TAG, "Failed to retrieve user information from login")
+                    }
+                    // now we are signed in, show them the app
                     postAuthenticationSuccess()
                 } else {
-                    Log.d(TAG, "failed to login to server")
+                    Log.d(TAG, "Users ${email} failed to login because of reason: ${task.exception}")
+                    Toast.makeText(this, "Error: Invalid Email/Password ", Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -180,69 +225,30 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    // legacy functions
-    // ---------------------------------------------------------------------------------
     /**
-     * signUpLegacy(): Creates an account for a new user
-     *  - old method for creating user accounts
-     * @username EditText: User's username to login with
-     * @password EditText: User's password to login with
-     * @confirmPassword EditText: User's password confirmed
-     */
-    private fun signUpLegacy(username: String, password: String, confirmPassword: String) {
-        // TODO Passwords must always be hashed before being saved, this is for testing atm
-        if(username.isNotEmpty() && password.isNotEmpty() ) {
-            val testUser = hashMapOf(
-                "username" to username,
-                "password" to password,
-            )
-
-            // TODO check if username is unique
-            db.collection("users").document(username).set(testUser)
-                .addOnSuccessListener {
-                    Log.d(TAG, "Document added")
-
-                    // Automatically sign the user in after successful account creation
-                    Toast.makeText(this, "Account Created, Signing you in...", Toast.LENGTH_SHORT).show()
-                    signInLegacy(username, password)
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
-
-    /**
-     * signInLegacy(): Authenticates user to app
+     * postRegisterAddToCollection(): start nav bar and app
      *
-     * @username String: User's username to login with
-     * @password String: User's password to login with
+     * @email String: User's email for new account created
+     * @password String: User's password for new account created
+     *
+     * returns: true for success, false for failure
      */
-    private fun signInLegacy(username: String, password: String) {
-        db.collection("users").document(username).get()
-            .addOnSuccessListener { user ->
-                if (user != null) {
-                    Log.d(TAG, "${user.data}")
-                    if (user.data?.get("password") == password) {
+    private fun postRegisterAddToCollection(userID: String, email: String) {
+        val newUser = mutableMapOf(
+            "userID" to userID,
+            "emailAddress" to email,
+            "displayName" to email,
+            "profilePic" to null,
+        )
 
-                        // Save the username of the person logging in locally
-                        var editor = prefs!!.edit()
-                        editor.putString("USERNAME", username)
-                        editor.apply()
-
-                        postAuthenticationSuccess()
-                    } else {
-                        Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Log.d(TAG, "Document not found")
-                    Toast.makeText(this, wrongPasswordUsername, Toast.LENGTH_SHORT).show()
-                }
+        // add a user with doc name set to userID and attributes above
+        db.collection("users").document(userID)
+            .set(newUser)
+            .addOnSuccessListener { task ->
+                Log.d(TAG, "User ${email} successfully added to collection: ${task}")
             }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "$exception")
-                Toast.makeText(this, "Database is down sorry", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { task ->
+                Log.d(TAG, "Failed to add user ${email} to collection due to reason: ${task}")
             }
     }
 }

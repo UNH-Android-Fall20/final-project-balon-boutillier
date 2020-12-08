@@ -51,7 +51,7 @@ class ProfileFragment : Fragment() {
         editProfileButton = rootView.findViewById(R.id.edit_profile)
         profileTeamsButton = rootView.findViewById(R.id.teams)
 
-        profileName.setText(prefs?.getString("USERNAME", "<Username Holder>"))
+        profileName.setText(prefs?.getString("EMAILADDR", "<Username Holder>"))
 
 
         editProfileButton.setOnClickListener {
