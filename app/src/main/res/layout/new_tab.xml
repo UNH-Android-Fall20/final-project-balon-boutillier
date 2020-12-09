@@ -50,7 +50,7 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="300px" />
+        android:layout_height="290px" />
 
     <TextView
         android:id="@+id/textView3"

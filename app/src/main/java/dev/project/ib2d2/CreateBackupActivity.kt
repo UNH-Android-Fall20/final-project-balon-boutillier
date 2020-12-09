@@ -2,20 +2,29 @@ package dev.project.ib2d2
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Button
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.createbackup_layout.*
+import java.io.ByteArrayOutputStream
+import java.security.MessageDigest
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class CreateBackupActivity : AppCompatActivity() {
     private val TAG = javaClass.name
     private lateinit var bitmap: Bitmap
+    private lateinit var b_createBackup: Button
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.createbackup_layout)
 
@@ -34,13 +43,90 @@ class CreateBackupActivity : AppCompatActivity() {
             Log.d(TAG, imageUri.toString())
             bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
             backupImage.setImageBitmap(bitmap)
+        } else {
+            // provide toast, and go back
         }
 
-
+        backupHandler(bitmap)
 
         mTopToolbar.setNavigationOnClickListener{
             super.onBackPressed()
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
+    }
+
+    /**
+     * backupHandler(): handles the backup routine
+     *  - watches for createBackup to be called
+     *  - creates necessary information to make backup
+     *  - uploads to b2 and firestore
+     *  - creates collection entry for backup
+     *
+     *  @bitmap Bitmap: data of image selection
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun backupHandler(bitmap: Bitmap){
+        b_createBackup = findViewById(R.id.createBackup_button)
+
+        /* todo: implement as follows
+         *  (1) check the fields, receive the data [done]
+         *  (2) create sha hash, timestamp [done]
+         *  (3) upload to backblaze
+         *  (4) upload to firestore cloud storage
+         *  (5) take all data and submit to the files collection
+         *  (6) show dialog for success
+         *  (7) pop out to the main screen again
+         *
+         * (?) encryption: have user make local pw
+         * (?) do not upload to firestore
+         * (?) enter in settings
+         * (?) AES data
+         */
+        // handle the createBackup button
+        b_createBackup.setOnClickListener{
+            Log.d(TAG, "Running backup routine...")
+            val title = titleBackup.editText?.text.toString()
+            val desc = descBackup.editText?.text.toString()
+
+            // validate user input
+            when {
+                (title.isBlank()) -> Toast.makeText(this, "Error: Select a title for your backup", Toast.LENGTH_SHORT).show()
+                (desc.isBlank()) -> Toast.makeText(this, "Error: Select a description for your backup", Toast.LENGTH_SHORT).show()
+                else -> {
+                    // create timestamp
+                    val timeStamp = DateTimeFormatter
+                        .ofPattern("yyyy_MM_dd_hh_mm_ss")
+                        .withZone(ZoneOffset.UTC)
+                        .format(Instant.now())
+
+                    // create sha1 hash of image
+                    val shaHash = sha1Hash(bitmap)
+                    Log.d(TAG, timeStamp)
+                    Log.d(TAG, shaHash)
+
+                    doBackupRoutine(bitmap, title, desc, timeStamp, shaHash)
+                }
+            }
+        }
+    }
+
+    private fun doBackupRoutine(bitmap: Bitmap, title: String, desc: String, timeStamp: String, shaHash: String){
+
+    }
+
+    /**
+     * sha1Hash(): create sha1 hash of bitmap
+     *
+     *  @bitmap: user selected image
+     *
+     *  @ref: https://developer.android.com/reference/kotlin/java/security/MessageDigest
+     */
+    private fun sha1Hash(bitmap: Bitmap): String    {
+        // convert bitmap to ByeArray
+        val byteArray = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArray)
+        return MessageDigest.getInstance("SHA-1")
+            .digest(byteArray.toByteArray())
+            .fold("", { str, it -> str + "%02x".format(it) })
     }
 }
