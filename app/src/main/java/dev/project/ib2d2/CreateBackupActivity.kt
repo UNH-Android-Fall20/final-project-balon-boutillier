@@ -19,6 +19,7 @@ class CreateBackupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.createbackup_layout)
 
+        // show and configure tool bar
         val mTopToolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(mTopToolbar)
         setTitle("Create New Backup")
