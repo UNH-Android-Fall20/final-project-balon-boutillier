@@ -1,9 +1,9 @@
 package dev.project.ib2d2.Fragments
 
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
@@ -104,6 +104,34 @@ class NewFragment : Fragment() {
         return rootView
     }
 
+
+    /**
+     * @Override OnActivityResultListener: callback for image picker(s)
+     *
+     * @ref: https://www.youtube.com/watch?v=b3BEa2drx4w
+     */
+    @Override
+    fun OnActivityResultListener(requestCode: Int, resultCode: Int, data: Intent) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // check if the RESULT_OK and if the data exists
+        if(resultCode == RESULT_OK && data != null){
+            when(resultCode){
+                IMAGE_CAMERA_REQUEST_CODE -> {
+
+                }
+                IMAGE_GALLERY_REQUEST_CODE -> {
+
+                }
+                else -> {
+
+                }
+            }
+
+        }
+    }
+
+
     // permission management
     // @ref: https://developer.android.com/training/permissions/requesting#kotlin
 
@@ -137,6 +165,12 @@ class NewFragment : Fragment() {
         }
     }
 
+    /**
+     * informAppPermissions(): inform user of access required
+     *
+     *  @permissionText String: pretty name to describe the permission
+     *
+     */
     private fun informAppPermissions(permissionText: String){
         // provide info on why we need access
         val alertDialog: AlertDialog? = activity?.let {

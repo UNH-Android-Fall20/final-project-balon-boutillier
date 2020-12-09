@@ -54,4 +54,7 @@
     <string name="team_code">Team Code:</string>
     <string name="list_existing">List existing teams</string>
     <string name="team_share">Team Share</string>
+    <string name="newBackup">Backup New Files</string>
+    <string name="newBackupTypes"><i>(Supported Types: Images)</i></string>
+    <string name="appVersion">ib2d2 | Version: 0.3.1-dev</string>
 </resources>
