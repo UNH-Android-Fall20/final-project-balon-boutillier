@@ -13,7 +13,7 @@
         android:src="@drawable/ib2d2_logo" />
 
     <Button
-        android:id="@+id/new_file_button"
+        android:id="@+id/selectImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="@drawable/round_button"

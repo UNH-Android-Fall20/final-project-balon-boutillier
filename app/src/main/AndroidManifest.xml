@@ -3,6 +3,10 @@
     xmlns:android ="http://schemas.android.com/apk/res/android"
     package       ="dev.project.ib2d2">
 
+    <!-- declaration for permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <!-- Global Application Preferences -->
     <application
         android:allowBackup         ="true"
