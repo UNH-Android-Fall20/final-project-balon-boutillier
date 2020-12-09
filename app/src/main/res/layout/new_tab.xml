@@ -16,16 +16,16 @@
         android:layout_height="40px"
         />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/selectImage"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:background="@drawable/round_button"
+        android:layout_width="155dp"
+        android:layout_height="165dp"
+        android:backgroundTint="@color/colorSecondary"
         android:gravity="center_horizontal"
-        android:text="@string/plus"
+        android:text="+"
         android:textColor="#ffffff"
-        android:textSize="110sp" />
-
+        android:textSize="100sp"
+        app:cornerRadius="100dp" />
 
     <TextView
         android:id="@+id/textView"
