@@ -28,6 +28,8 @@
         does not require a BackBlaze account, adds team sharing features, increases security, and
         works to make ib2d2 more user friendly.
         </string>
+    <string name="badAccess">iB2D2 requires access to the camera and gallery to function properly.
+        To authorize access to the camera and gallery please visit your settings.</string>
     <string name="profileDescription">Profile Pic</string>
     <string name="editProfile">Edit Profile</string>
     <string name="teams">Teams</string>

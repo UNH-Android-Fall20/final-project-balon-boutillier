@@ -1,5 +1,7 @@
 package dev.project.ib2d2.Fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import dev.project.ib2d2.R
@@ -29,7 +32,35 @@ class NewFragment : Fragment() {
 
         b_selectImage = rootView.findViewById(R.id.selectImage)
         b_selectImage.setOnClickListener {
-            checkAppPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE, "GALLERY", IMAGE_GALLERY_REQUEST_CODE)
+            // ask user camera or gallery as input
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle("Choose image source")
+                    setPositiveButton("Camera",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // check if there are permissions for the camera
+                            checkAppPermissions(
+                                android.Manifest.permission.CAMERA,
+                                "CAMERA",
+                                IMAGE_CAMERA_REQUEST_CODE, rootView)
+                        })
+                    setNegativeButton("Gallery",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // check if there are permissions for the gallery
+                            checkAppPermissions(
+                                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                                "GALLERY",
+                                IMAGE_GALLERY_REQUEST_CODE, rootView)
+                        })
+                }
+
+                // Create the AlertDialog
+                builder.create()
+                builder.show()
+            }
+
+
 
             // open the gallery and let the user select an image
             //val gallery = Intent()
@@ -39,10 +70,8 @@ class NewFragment : Fragment() {
         }
 
         /*
-        1. build an alert dialog to select camera or gallery
-        1. check permissions before each time we use camera
-        2. set up postLoginSuccess() to request permissions for app before we open theseparts
-        3. if the check fails, log the user out and require them to log back in with that error
+        1. (X) build an alert dialog to select camera or gallery
+        1. (X) check permissions before each time we use camera
         4. if the check succeeds we can open the camera and do what we need here and in the profile sec
         5. store images appropriate, everything goes in the files collection for storage
          */
@@ -56,25 +85,46 @@ class NewFragment : Fragment() {
 
     /**
      * checkAppPermissions(): check for access to apis
-     *  - checks for camera access
-     *  - checks for gallery access
      *
-     *  @permission String:
+     *  @permission String: the permission we are requesting (android defined)
+     *  @permissionText String: pretty name to describe the permission
+     *  @requestCode Int: arbitrary code to describe asset requested
      *
-     *  returns: true - has permission, false - no permission
      */
-    private fun checkAppPermissions(permission: String, permissionText: String, requestCode: Int): Boolean{
-        // check if the user has permission
-        if(activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED){
-            Log.d(TAG, "Failure: User does not have permission to the ${permissionText}")
-            requestPermissions(arrayOf(permission), requestCode)
+    private fun checkAppPermissions(permission: String, permissionText: String, requestCode: Int, currentView: View){
+        when{
+            activity?.let { ContextCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED -> {
+                // if there is permission... proceed
+                Log.d(TAG, "Success: User has permission to the ${permissionText}")
+            }
+            shouldShowRequestPermissionRationale(permission) -> {
+                // if there is no permission, but we have been here before.. let them know
+                informAppPermissions(permissionText)
+            }
+            else -> {
+                // if no permission... inform user and prompt them
+                Log.d(TAG, "Failure: User does not have permission to the ${permissionText}")
+                Toast.makeText(currentView.context, "This app requires camera/gallery access to function", Toast.LENGTH_SHORT).show()
+                requestPermissions(arrayOf(permission), requestCode)
+            }
+        }
+    }
 
-            // check recursively if we have permission or not
-            // checkAppPermissions(permission, permissionText, requestCode)
-            return true
-        } else {
-            Log.d(TAG, "Success: User has permission to the ${permissionText}")
-            return true
+    private fun informAppPermissions(permissionText: String){
+        // provide info on why we need access
+        val alertDialog: AlertDialog? = activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setTitle("Additional Access Required")
+                setMessage(getString(R.string.badAccess))
+                setPositiveButton("OK",
+                    DialogInterface.OnClickListener { dialog, id ->
+                    })
+            }
+
+            // Create the AlertDialog
+            builder.create()
+            builder.show()
         }
     }
 }
