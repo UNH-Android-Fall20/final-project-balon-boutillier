@@ -11,7 +11,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import dev.project.ib2d2.Classes.BackBlaze
 import kotlinx.android.synthetic.main.createbackup_layout.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
 import java.time.Instant
@@ -72,9 +75,11 @@ class CreateBackupActivity : AppCompatActivity() {
          *  (1) check the fields, receive the data [done]
          *  (2) create sha hash, timestamp [done]
          *  (3) upload to backblaze
+         *      - create an upload() func
+         *      - create a download() func
          *  (4) upload to firestore cloud storage
          *  (5) take all data and submit to the files collection
-         *  (6) show dialog for success
+         *  (6) show dialog while working
          *  (7) pop out to the main screen again
          *
          * (?) encryption: have user make local pw
@@ -104,14 +109,18 @@ class CreateBackupActivity : AppCompatActivity() {
                     Log.d(TAG, timeStamp)
                     Log.d(TAG, shaHash)
 
-                    doBackupRoutine(bitmap, title, desc, timeStamp, shaHash)
+                    // create Backblaze object
+                    val backup = BackBlaze()
+
+
+                    // run the backup code necessary
+                    val doBackup = GlobalScope.launch {
+                        backup.upload()
+                    }
+
                 }
             }
         }
-    }
-
-    private fun doBackupRoutine(bitmap: Bitmap, title: String, desc: String, timeStamp: String, shaHash: String){
-
     }
 
     /**
