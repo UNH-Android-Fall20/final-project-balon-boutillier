@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -83,48 +84,29 @@ class NewFragment : Fragment() {
                 builder.create()
                 builder.show()
             }
-
-
-
-            // open the gallery and let the user select an image
-            //val gallery = Intent()
-            //gallery.setType("image/*")
-            //gallery.setAction(Intent.ACTION_GET_CONTENT)
-
         }
-
-        /*
-        1. (X) build an alert dialog to select camera or gallery
-        1. (X) check permissions before each time we use camera
-        4. if the check succeeds we can open the camera and do what we need here and in the profile sec
-        5. store images appropriate, everything goes in the files collection for storage
-         */
-
-
         return rootView
     }
 
-
     /**
-     * @Override OnActivityResultListener: callback for image picker(s)
-     *
-     * @ref: https://www.youtube.com/watch?v=b3BEa2drx4w
+     * OnActivityResultListener: callback for image picker(s)
      */
-    @Override
-    fun OnActivityResultListener(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         // check if the RESULT_OK and if the data exists
         if(resultCode == RESULT_OK && data != null){
-            when(resultCode){
+            when(requestCode){
                 IMAGE_CAMERA_REQUEST_CODE -> {
-
+                    val bitmap = data.extras?.get("data") as Bitmap
+                    Log.d(TAG, bitmap.toString())
                 }
                 IMAGE_GALLERY_REQUEST_CODE -> {
-
+                    // get imageUri (path to image) from
+                    val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, data.data!!)
+                    Log.d(TAG, bitmap.toString())
                 }
                 else -> {
-
+                    Log.d(TAG, "GOT HERE X")
                 }
             }
 
@@ -144,6 +126,7 @@ class NewFragment : Fragment() {
      *
      */
     private fun checkAppPermissions(permission: String, permissionText: String, requestCode: Int, currentView: View): Boolean{
+        // todo: add toasts where applicible for QOL
         when{
             activity?.let { ContextCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED -> {
                 // if there is permission... proceed
