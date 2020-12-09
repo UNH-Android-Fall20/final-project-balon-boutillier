@@ -65,6 +65,7 @@ android {
 
 // App Libraries//
 dependencies {
+    implementation 'com.google.android.material:material:1.2.1'
     implementation platform('com.google.firebase:firebase-bom:26.1.1')
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore:21.7.0'

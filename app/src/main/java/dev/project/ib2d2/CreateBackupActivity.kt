@@ -38,9 +38,6 @@ class CreateBackupActivity : AppCompatActivity() {
 
 
 
-
-
-
         mTopToolbar.setNavigationOnClickListener{
             super.onBackPressed()
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
