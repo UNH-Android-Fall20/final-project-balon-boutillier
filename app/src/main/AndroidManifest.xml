@@ -24,6 +24,9 @@
         <!-- Activity to control Example -->
         <activity android:name=".ExampleActivity"/>
 
+        <!-- Activity to control Backup Creation -->
+        <activity android:name=".CreateBackupActivity"/>
+
         <!-- Activity MainActivity -->
         <activity android:name=".MainActivity">
             <intent-filter>

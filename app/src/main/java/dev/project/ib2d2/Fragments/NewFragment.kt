@@ -1,11 +1,13 @@
 package dev.project.ib2d2.Fragments
 
 import android.app.Activity.RESULT_OK
+import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -16,6 +18,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import dev.project.ib2d2.CreateBackupActivity
 import dev.project.ib2d2.R
 
 private val IMAGE_GALLERY_REQUEST_CODE = 20
@@ -89,6 +92,21 @@ class NewFragment : Fragment() {
     }
 
     /**
+     * postImageSelectionSuccess(): handle transition to CreateBackup
+     *
+     *  @bitmap Bitmap: bitmap data of image
+     */
+    private fun postImageSelectionSuccess(imageUri: Uri){
+        // create intent and add the imageUri to it
+        val intent = Intent(context!!, CreateBackupActivity::class.java)
+        intent.putExtra("IMAGE_URI", imageUri.toString())
+
+        // customize animation then send us over
+        val options = ActivityOptions.makeCustomAnimation(context!!, R.anim.right_in, R.anim.left_out)
+        startActivity(intent, options.toBundle())
+    }
+
+    /**
      * OnActivityResultListener: callback for image picker(s)
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -97,13 +115,21 @@ class NewFragment : Fragment() {
         if(resultCode == RESULT_OK && data != null){
             when(requestCode){
                 IMAGE_CAMERA_REQUEST_CODE -> {
+                    // get the bitmap
                     val bitmap = data.extras?.get("data") as Bitmap
-                    Log.d(TAG, bitmap.toString())
+
+                    // store the image the camera took then send the imageUri to CreateBackup
+                    val imageUri = Uri.parse(MediaStore.Images.Media
+                            .insertImage(context!!.contentResolver, bitmap, "ib2d2 Image Capture", null))
+
+                    Log.d(TAG, "Image created: ${imageUri}")
+                    postImageSelectionSuccess(imageUri)
                 }
                 IMAGE_GALLERY_REQUEST_CODE -> {
-                    // get imageUri (path to image) from
-                    val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, data.data!!)
-                    Log.d(TAG, bitmap.toString())
+                    // get selected imageUri and send to CreateBackup
+                    val imageUri = data.data!!
+                    Log.d(TAG, "Image selected: ${imageUri}")
+                    postImageSelectionSuccess(imageUri)
                 }
                 else -> {
                     Log.d(TAG, "GOT HERE X")
@@ -123,10 +149,8 @@ class NewFragment : Fragment() {
      *  @permission String: the permission we are requesting (android defined)
      *  @permissionText String: pretty name to describe the permission
      *  @requestCode Int: arbitrary code to describe asset requested
-     *
      */
     private fun checkAppPermissions(permission: String, permissionText: String, requestCode: Int, currentView: View): Boolean{
-        // todo: add toasts where applicible for QOL
         when{
             activity?.let { ContextCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED -> {
                 // if there is permission... proceed
@@ -136,23 +160,25 @@ class NewFragment : Fragment() {
             shouldShowRequestPermissionRationale(permission) -> {
                 // if there is no permission, but we have been here before.. let them know
                 informAppPermissions(permissionText)
+                Toast.makeText(currentView.context, "App requires camera/gallery access", Toast.LENGTH_SHORT).show()
                 return false
             }
             else -> {
                 // if no permission... inform user and prompt them
                 Log.d(TAG, "Failure: User does not have permission to the ${permissionText}")
-                Toast.makeText(currentView.context, "This app requires camera/gallery access to function", Toast.LENGTH_SHORT).show()
+                Toast.makeText(currentView.context, "App requires camera/gallery access", Toast.LENGTH_SHORT).show()
                 requestPermissions(arrayOf(permission), requestCode)
                 return false
             }
         }
     }
 
+
+
     /**
      * informAppPermissions(): inform user of access required
      *
      *  @permissionText String: pretty name to describe the permission
-     *
      */
     private fun informAppPermissions(permissionText: String){
         // provide info on why we need access
