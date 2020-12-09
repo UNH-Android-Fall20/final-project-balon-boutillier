@@ -1,5 +1,6 @@
 package dev.project.ib2d2
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -11,6 +12,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dev.project.ib2d2.Classes.BackBlaze
 import kotlinx.android.synthetic.main.createbackup_layout.*
 import kotlinx.coroutines.GlobalScope
@@ -26,10 +30,17 @@ class CreateBackupActivity : AppCompatActivity() {
     private lateinit var bitmap: Bitmap
     private lateinit var b_createBackup: Button
 
+    // Local persistent storage
+    private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
+    private var prefs: SharedPreferences? = null
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.createbackup_layout)
+
+        // Load stored preferences (data) on device
+        prefs = this.getSharedPreferences(PREFS_FILENAME, 0)
 
         // show and configure tool bar
         val mTopToolbar = findViewById(R.id.toolbar) as Toolbar
@@ -75,7 +86,7 @@ class CreateBackupActivity : AppCompatActivity() {
          *  (1) check the fields, receive the data [done]
          *  (2) create sha hash, timestamp [done]
          *  (3) upload to backblaze
-         *      - create an upload() func
+         *      - create an upload() func [done]
          *      - create a download() func
          *  (4) upload to firestore cloud storage
          *  (5) take all data and submit to the files collection
@@ -110,12 +121,15 @@ class CreateBackupActivity : AppCompatActivity() {
                     Log.d(TAG, shaHash)
 
                     // create Backblaze object
-                    val backup = BackBlaze()
+                    val b2 = BackBlaze()
+                    var userID = prefs?.getString("USERID", "NULL")
 
 
                     // run the backup code necessary
                     val doBackup = GlobalScope.launch {
-                        backup.upload()
+                        if (userID != null) {
+                            b2.upload(userID, bitmap, title, desc, shaHash, timeStamp)
+                        }
                     }
 
                 }
@@ -133,7 +147,7 @@ class CreateBackupActivity : AppCompatActivity() {
     private fun sha1Hash(bitmap: Bitmap): String    {
         // convert bitmap to ByeArray
         val byteArray = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArray)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArray)
         return MessageDigest.getInstance("SHA-1")
             .digest(byteArray.toByteArray())
             .fold("", { str, it -> str + "%02x".format(it) })
