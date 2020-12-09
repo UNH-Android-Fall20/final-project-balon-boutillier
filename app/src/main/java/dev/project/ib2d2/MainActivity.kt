@@ -11,6 +11,10 @@ import android.text.TextUtils
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.editText_email
+import kotlinx.android.synthetic.main.activity_main.editText_password
+import kotlinx.android.synthetic.main.register_layout.*
 import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
@@ -77,8 +81,8 @@ class MainActivity : AppCompatActivity() {
 
         // handle: loginButton (send to login screen)
         b_login.setOnClickListener {
-            val email = (findViewById<EditText>(R.id.editText_email)).text.toString()
-            val password = (findViewById<EditText>(R.id.editText_password)).text.toString()
+            val email = editText_email.editText?.text.toString()
+            val password = editText_password.editText?.text.toString()
 
             // validate the user input
             when {
@@ -99,9 +103,9 @@ class MainActivity : AppCompatActivity() {
             b_cancelRegister = findViewById(R.id.registerBack_button)
 
             b_doRegister.setOnClickListener {
-                val email = (findViewById<EditText>(R.id.editText_email))?.text.toString()
-                val password = (findViewById<EditText>(R.id.editText_password))?.text.toString()
-                val confirmPassword = (findViewById<EditText>(R.id.editText_confirmPassword))?.text.toString()
+                val email = editText_email.editText?.text.toString()
+                val password = editText_password.editText?.text.toString()
+                val confirmPassword = editText_confirmPassword.editText?.text.toString()
 
                 // validate the user input
                 when {
