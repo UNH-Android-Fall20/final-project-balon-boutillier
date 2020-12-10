@@ -1,5 +1,7 @@
 package dev.project.ib2d2
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -25,10 +27,6 @@ import kotlinx.coroutines.launch
 class ViewBackupActivity : AppCompatActivity() {
     private val TAG = javaClass.name
 
-    // Local persistent storage
-    private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
-    private var prefs: SharedPreferences? = null
-
     // buttons, images, and lateinits
     private lateinit var fbImage: ImageView
     private lateinit var b2Image: ImageView
@@ -39,7 +37,6 @@ class ViewBackupActivity : AppCompatActivity() {
     private lateinit var timeText: TextView
     private lateinit var model: Backup
     private lateinit var deleteButton: Button
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,12 +60,35 @@ class ViewBackupActivity : AppCompatActivity() {
         // populate the page for the user
         populateBackup()
 
+        b2Image.setOnClickListener{
+            // create intent and add the fileName
+            val intent = Intent(applicationContext, ImageViewer::class.java)
+            intent.putExtra("IMAGE_TITLE", model.title)
+            intent.putExtra("IMAGE_NAME", model.fileName)
+            intent.putExtra("METHOD", "backblaze")
+
+            // customize animation then send us over
+            val options = ActivityOptions.makeCustomAnimation(applicationContext, R.anim.right_in, R.anim.left_out)
+            startActivity(intent, options.toBundle())
+        }
+
+        fbImage.setOnClickListener{
+            // create intent and add the fileName
+            val intent = Intent(applicationContext, ImageViewer::class.java)
+            intent.putExtra("IMAGE_TITLE", model.title)
+            intent.putExtra("IMAGE_NAME", model.fileName)
+            intent.putExtra("METHOD", "firebase")
+
+            // customize animation then send us over
+            val options = ActivityOptions.makeCustomAnimation(applicationContext, R.anim.right_in, R.anim.left_out)
+            startActivity(intent, options.toBundle())
+        }
+
         mTopToolbar.setNavigationOnClickListener{
             super.onBackPressed()
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
-
 
     /**
      * populateBackup(): populates the view backup page
