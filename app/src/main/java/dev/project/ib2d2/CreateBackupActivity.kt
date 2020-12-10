@@ -17,8 +17,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import dev.project.ib2d2.Classes.BackBlaze
+import dev.project.ib2d2.Classes.CloudStorage
 import kotlinx.android.synthetic.main.createbackup_layout.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -31,6 +33,7 @@ import java.time.format.DateTimeFormatter
 
 class CreateBackupActivity : AppCompatActivity() {
     private val TAG = javaClass.name
+    private val db = FirebaseFirestore.getInstance()
     private lateinit var bitmap: Bitmap
     private lateinit var b_createBackup: Button
 
@@ -86,17 +89,7 @@ class CreateBackupActivity : AppCompatActivity() {
     private fun backupHandler(bitmap: Bitmap){
         b_createBackup = findViewById(R.id.createBackup_button)
 
-        /* todo: implement as follows
-         *  (1) check the fields, receive the data [done]
-         *  (2) create sha hash, timestamp [done]
-         *  (!) show progress bar
-         *  (3) upload to backblaze [done]
-         *      - create an upload() func [done]
-         *      - create a download() func
-         *  (4) upload to firestore cloud storage
-         *  (5) take all data and submit to the files collection
-         *  (7) pop out to the main screen again
-         *
+        /* TODO: ideas --
          * (?) encryption: have user make local pw
          * (?) do not upload to firestore
          * (?) enter in settings
@@ -115,7 +108,7 @@ class CreateBackupActivity : AppCompatActivity() {
                 else -> {
                     // create timestamp
                     val timeStamp = DateTimeFormatter
-                        .ofPattern("yyyy_MM_dd_hh_mm_ss")
+                        .ofPattern("yyyy_MM_dd_hh_mm_ss_SSS")
                         .withZone(ZoneOffset.UTC)
                         .format(Instant.now())
 
@@ -127,14 +120,37 @@ class CreateBackupActivity : AppCompatActivity() {
                     // get userID
                     var userID = prefs?.getString("USERID", "NULL")
 
+                    // create the fileName
+                    val fileName = userID + "_" + timeStamp
+
+                    // TODO: show progress bar
+
                     // call coroutine to thread fileUpload
                     CoroutineScope(IO).launch{
                         if (userID != null) {
+                            // upload to backblaze
                             val b2 = BackBlaze()
-                            b2.upload(userID, bitmap, shaHash, timeStamp)
+                            b2.upload(fileName, bitmap, shaHash, timeStamp)
+
+                            // upload to firebase cloud storage
+                            val firebase = CloudStorage()
+                            firebase.upload(fileName, bitmap, shaHash, timeStamp)
                         }
                         launch(Main){
-                            Log.d(TAG, "Upload to B2 complete")
+                            val fileData = mutableMapOf(
+                                "createdBy" to userID,
+                                "timeStamp" to timeStamp,
+                                "fileName" to fileName,
+                                "shaHash" to shaHash,
+                                "title" to title,
+                                "desc" to desc
+                            )
+
+                            // create a new document in files collection
+                            db.collection("files").document(fileName)
+                                .set(fileData)
+
+                            // TODO: force back press and show confirmation
                         }
                     }
                 }

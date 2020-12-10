@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
-import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -27,20 +26,19 @@ class BackBlaze {
     private lateinit var bucketID: String
     private lateinit var uploadUrl: String
     private lateinit var accUploadToken: String
-    private lateinit var fileID: String
+    private lateinit var fileName: String
 
     // data for upload
     private lateinit var bitmap: Bitmap
     private lateinit var shaHash: String
     private lateinit var timeStamp: String
-    private lateinit var userID: String
 
     /**
      * authorize(): authorize account information to B2
      *
      *  @ref: https://www.backblaze.com/b2/docs/b2_authorize_account.html
      */
-     fun authorize(){
+     private fun authorize(){
         // create connection, headers
         var url = URL("https://api.backblazeb2.com/b2api/v2/b2_authorize_account")
         var authHeader = ("Basic " + Base64.encodeToString("$accountID:$appKey".toByteArray(), Base64.DEFAULT))
@@ -118,7 +116,6 @@ class BackBlaze {
     private fun uploadFile(){
         // create connection, headers
         var url = URL(uploadUrl)
-        val fileName = (userID + "_" + timeStamp)
         val contentType = "image/jpeg"
         lateinit var json: JSONObject
 
@@ -141,13 +138,9 @@ class BackBlaze {
 
                 json = JSONObject(jsonDecode(inputStream))
 
-                // retrieve data from b2 json
-                fileID = json["fileId"] as String
-
 
                 // log what we got from b2
                 Log.d(TAG, json.toString())
-                Log.d(TAG, fileID)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -161,7 +154,7 @@ class BackBlaze {
      */
     private fun downloadFile(){
         // create connection, headers
-        var url = URL("$downloadUrl/b2api/v2/b2_download_file_by_id?fileId=$fileID")
+        var url = URL("$downloadUrl/file/$bucketName/$fileName")
         lateinit var imageData: ByteArray
 
         try {
@@ -200,21 +193,21 @@ class BackBlaze {
      * @hash String: sha1 hash of data
      * @time String: timeStamp of selection
      */
-    suspend fun upload(usr: String, bt: Bitmap, hash: String, time: String): String{
+    suspend fun upload(fn: String, bt: Bitmap, hash: String, time: String){
         // initialize our variables
-        userID = usr
+        fileName = fn
         bitmap = bt
 
         shaHash = hash
         timeStamp = time
 
-        Log.d(TAG, "uploading file...")
+        Log.d(TAG, "uploading file to b2...")
         withContext(Dispatchers.IO){
             authorize()
             getUploadUrl()
             uploadFile()
         }
-        return fileID
+        Log.d(TAG, "Upload to B2 complete")
     }
 
     /**
@@ -222,10 +215,10 @@ class BackBlaze {
      *
      * @fid String: fileId to download from B2
      */
-    suspend fun download(fid: String): Bitmap{
-        fileID = fid
+    suspend fun download(fnm: String): Bitmap{
+        fileName = fnm
 
-        Log.d(TAG, "downloading file...")
+        Log.d(TAG, "downloading file from b2...")
         withContext(Dispatchers.IO){
             authorize()
             downloadFile()
