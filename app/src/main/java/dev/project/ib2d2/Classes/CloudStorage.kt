@@ -57,9 +57,17 @@ class CloudStorage {
         }
     }
 
+
+    /**
+     * downloadFile(): download file from firebase
+     *
+     *  @ref: https://firebase.google.com/docs/storage/android/download-files
+     */
+    private fun downloadFile(){
+    }
+
     /**
      * upload(): perform upload to firebase storage
-     *
      */
     suspend fun upload(fn: String, bt: Bitmap, hash: String, time: String){
         // initialize variables
@@ -75,6 +83,12 @@ class CloudStorage {
         Log.d(TAG, "Upload to Firebase complete")
     }
 
+    /**
+     * download): get file from firebase
+     */
+    suspend fun download(fn: String){
+        fileName = fn
+    }
 
 
 }

@@ -149,6 +149,8 @@ class CreateBackupActivity : AppCompatActivity() {
                             // create a new document in files collection
                             db.collection("files").document(fileName)
                                 .set(fileData)
+
+                            // TODO: force back press and show confirmation
                         }
                     }
                 }
