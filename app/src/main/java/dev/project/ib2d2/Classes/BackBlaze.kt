@@ -124,7 +124,7 @@ class BackBlaze {
 
         // convert image data
         val byteStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream)
         val imageData = byteStream.toByteArray()
 
         try {

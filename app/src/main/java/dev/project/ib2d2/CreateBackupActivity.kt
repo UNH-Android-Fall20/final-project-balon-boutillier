@@ -127,26 +127,16 @@ class CreateBackupActivity : AppCompatActivity() {
                     // get userID
                     var userID = prefs?.getString("USERID", "NULL")
 
-
-                    Log.d(TAG, "setting imageview to null...")
-                    backupImage.setImageDrawable(null)
-                    lateinit var dlBitmap: Bitmap
-
                     // call coroutine to thread fileUpload
                     CoroutineScope(IO).launch{
                         if (userID != null) {
                             val b2 = BackBlaze()
-                            val fileID = b2.upload(userID, bitmap, shaHash, timeStamp)
-                            val b2dl = BackBlaze()
-                            dlBitmap = (b2dl.download(fileID) as? Bitmap)!!
-                            Log.d(TAG, sha1Hash(dlBitmap))
+                            b2.upload(userID, bitmap, shaHash, timeStamp)
                         }
                         launch(Main){
                             Log.d(TAG, "Upload to B2 complete")
                         }
                     }
-
-
                 }
             }
         }
@@ -162,7 +152,7 @@ class CreateBackupActivity : AppCompatActivity() {
     private fun sha1Hash(bitmap: Bitmap): String    {
         // convert bitmap to ByeArray
         val byteArray = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArray)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArray)
         return MessageDigest.getInstance("SHA-1")
             .digest(byteArray.toByteArray())
             .fold("", { str, it -> str + "%02x".format(it) })
