@@ -69,4 +69,7 @@
     <string name="shaHash">SHA-1 Hash:</string>
     <string name="timeStamp">Timestamp:</string>
     <string name="createdBy">Created By:</string>
+    <string name="displayName">Display Name:</string>
+    <string name="displayNameHelper">What do you want to be called?</string>
+    <string name="selectAvatar">Select Avatar</string>
 </resources>
