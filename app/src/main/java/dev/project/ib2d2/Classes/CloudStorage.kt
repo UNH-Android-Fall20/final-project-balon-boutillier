@@ -12,8 +12,8 @@ class CloudStorage {
     private val TAG = javaClass.name
 
     // data for upload
+    private lateinit var fileName: String
     private lateinit var bitmap: Bitmap
-    private lateinit var userID: String
     private lateinit var shaHash: String
     private lateinit var timeStamp: String
 
@@ -30,8 +30,8 @@ class CloudStorage {
         val storageRef = storage.reference
 
         // create ref to file and to image
-        val fileReference = storageRef.child(userID + "_" + timeStamp)
-        val fileImgReference = storageRef.child("images/" + userID + "_" + timeStamp)
+        val fileReference = storageRef.child(fileName)
+        val fileImgReference = storageRef.child("images/$fileName")
 
         // While the file names are the same, the references point to different files
         fileReference.name == fileImgReference.name // true
@@ -61,9 +61,9 @@ class CloudStorage {
      * upload(): perform upload to firebase storage
      *
      */
-    suspend fun upload(usr: String, bt: Bitmap, hash: String, time: String){
+    suspend fun upload(fn: String, bt: Bitmap, hash: String, time: String){
         // initialize variables
-        userID = usr
+        fileName = fn
         bitmap = bt
         shaHash = hash
         timeStamp = time
@@ -74,4 +74,7 @@ class CloudStorage {
         }
         Log.d(TAG, "Upload to Firebase complete")
     }
+
+
+
 }

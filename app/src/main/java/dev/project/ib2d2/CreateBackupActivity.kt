@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import dev.project.ib2d2.Classes.BackBlaze
 import dev.project.ib2d2.Classes.CloudStorage
@@ -32,6 +33,7 @@ import java.time.format.DateTimeFormatter
 
 class CreateBackupActivity : AppCompatActivity() {
     private val TAG = javaClass.name
+    private val db = FirebaseFirestore.getInstance()
     private lateinit var bitmap: Bitmap
     private lateinit var b_createBackup: Button
 
@@ -118,6 +120,9 @@ class CreateBackupActivity : AppCompatActivity() {
                     // get userID
                     var userID = prefs?.getString("USERID", "NULL")
 
+                    // create the fileName
+                    val fileName = userID + "_" + timeStamp
+
                     // TODO: show progress bar
 
                     // call coroutine to thread fileUpload
@@ -125,14 +130,25 @@ class CreateBackupActivity : AppCompatActivity() {
                         if (userID != null) {
                             // upload to backblaze
                             val b2 = BackBlaze()
-                            b2.upload(userID, bitmap, shaHash, timeStamp)
+                            b2.upload(fileName, bitmap, shaHash, timeStamp)
 
                             // upload to firebase cloud storage
                             val firebase = CloudStorage()
-                            firebase.upload(userID, bitmap, shaHash, timeStamp)
+                            firebase.upload(fileName, bitmap, shaHash, timeStamp)
                         }
                         launch(Main){
-                            // TODO: add to firebase collection
+                            val fileData = mutableMapOf(
+                                "createdBy" to userID,
+                                "timeStamp" to timeStamp,
+                                "fileName" to fileName,
+                                "shaHash" to shaHash,
+                                "title" to title,
+                                "desc" to desc
+                            )
+
+                            // create a new document in files collection
+                            db.collection("files").document(fileName)
+                                .set(fileData)
                         }
                     }
                 }

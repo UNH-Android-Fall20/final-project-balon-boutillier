@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
-import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -33,14 +32,13 @@ class BackBlaze {
     private lateinit var bitmap: Bitmap
     private lateinit var shaHash: String
     private lateinit var timeStamp: String
-    private lateinit var userID: String
 
     /**
      * authorize(): authorize account information to B2
      *
      *  @ref: https://www.backblaze.com/b2/docs/b2_authorize_account.html
      */
-     fun authorize(){
+     private fun authorize(){
         // create connection, headers
         var url = URL("https://api.backblazeb2.com/b2api/v2/b2_authorize_account")
         var authHeader = ("Basic " + Base64.encodeToString("$accountID:$appKey".toByteArray(), Base64.DEFAULT))
@@ -118,7 +116,6 @@ class BackBlaze {
     private fun uploadFile(){
         // create connection, headers
         var url = URL(uploadUrl)
-        val uploadName = (userID + "_" + timeStamp)
         val contentType = "image/jpeg"
         lateinit var json: JSONObject
 
@@ -133,7 +130,7 @@ class BackBlaze {
                 requestMethod = "POST"
                 setRequestProperty("Authorization", accUploadToken)
                 setRequestProperty("Content-Type", contentType)
-                setRequestProperty("X-Bz-File-Name", uploadName)
+                setRequestProperty("X-Bz-File-Name", fileName)
                 setRequestProperty("X-Bz-Content-Sha1", shaHash)
                 doOutput = true
                 outputStream.write(imageData)
@@ -141,13 +138,9 @@ class BackBlaze {
 
                 json = JSONObject(jsonDecode(inputStream))
 
-                // retrieve data from b2 json
-                fileName = json["fileName"] as String
-
 
                 // log what we got from b2
                 Log.d(TAG, json.toString())
-                Log.d(TAG, fileName)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -200,9 +193,9 @@ class BackBlaze {
      * @hash String: sha1 hash of data
      * @time String: timeStamp of selection
      */
-    suspend fun upload(usr: String, bt: Bitmap, hash: String, time: String): String{
+    suspend fun upload(fn: String, bt: Bitmap, hash: String, time: String){
         // initialize our variables
-        userID = usr
+        fileName = fn
         bitmap = bt
 
         shaHash = hash
@@ -215,7 +208,6 @@ class BackBlaze {
             uploadFile()
         }
         Log.d(TAG, "Upload to B2 complete")
-        return fileName
     }
 
     /**
