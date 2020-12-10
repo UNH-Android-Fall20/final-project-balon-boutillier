@@ -163,6 +163,7 @@ class BackBlaze {
         // create connection, headers
         var url = URL("$downloadUrl/b2api/v2/b2_download_file_by_id?fileId=$fileID")
         lateinit var imageData: ByteArray
+
         try {
             // can we authorize with b2?
             (url.openConnection() as? HttpURLConnection)?.run{
@@ -176,7 +177,6 @@ class BackBlaze {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     /**
@@ -208,6 +208,7 @@ class BackBlaze {
         shaHash = hash
         timeStamp = time
 
+        Log.d(TAG, "uploading file...")
         withContext(Dispatchers.IO){
             authorize()
             getUploadUrl()
@@ -223,8 +224,8 @@ class BackBlaze {
      */
     suspend fun download(fid: String): Bitmap{
         fileID = fid
-        Log.d(TAG, fileID)
-        Log.d(TAG, "downloading files...")
+
+        Log.d(TAG, "downloading file...")
         withContext(Dispatchers.IO){
             authorize()
             downloadFile()

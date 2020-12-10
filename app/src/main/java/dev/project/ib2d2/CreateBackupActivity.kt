@@ -1,13 +1,16 @@
 package dev.project.ib2d2
 
+import android.app.ProgressDialog
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Contacts
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -17,8 +20,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dev.project.ib2d2.Classes.BackBlaze
 import kotlinx.android.synthetic.main.createbackup_layout.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
 import java.time.Instant
@@ -85,12 +89,12 @@ class CreateBackupActivity : AppCompatActivity() {
         /* todo: implement as follows
          *  (1) check the fields, receive the data [done]
          *  (2) create sha hash, timestamp [done]
-         *  (3) upload to backblaze
+         *  (!) show progress bar
+         *  (3) upload to backblaze [done]
          *      - create an upload() func [done]
          *      - create a download() func
          *  (4) upload to firestore cloud storage
          *  (5) take all data and submit to the files collection
-         *  (6) show dialog while working
          *  (7) pop out to the main screen again
          *
          * (?) encryption: have user make local pw
@@ -127,22 +131,22 @@ class CreateBackupActivity : AppCompatActivity() {
                     Log.d(TAG, "setting imageview to null...")
                     backupImage.setImageDrawable(null)
                     lateinit var dlBitmap: Bitmap
-                    var isDone = false
 
-                    // run the backup in a coroutine
-                    val doBackup = GlobalScope.launch {
+                    // call coroutine to thread fileUpload
+                    CoroutineScope(IO).launch{
                         if (userID != null) {
                             val b2 = BackBlaze()
-                            b2.upload(userID, bitmap, shaHash, timeStamp)
+                            val fileID = b2.upload(userID, bitmap, shaHash, timeStamp)
                             val b2dl = BackBlaze()
-                            dlBitmap = (b2dl.download("4_zf67167f4a665004c7b5c0d1a_f102b2e6663469bc7_d20201210_m003320_c001_v0001146_t0011") as? Bitmap)!!
+                            dlBitmap = (b2dl.download(fileID) as? Bitmap)!!
                             Log.d(TAG, sha1Hash(dlBitmap))
-                            isDone = true
+                        }
+                        launch(Main){
+                            Log.d(TAG, "Upload to B2 complete")
                         }
                     }
 
-                    while(!isDone){}
-                    backupImage.setImageBitmap(dlBitmap)
+
                 }
             }
         }
