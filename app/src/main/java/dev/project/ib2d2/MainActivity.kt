@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.register_layout.*
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
     private val db = FirebaseFirestore.getInstance()
-    private val isDev = true
+    private val isDev = false
 
     private lateinit var auth: FirebaseAuth
     private lateinit var b_login: Button

@@ -156,6 +156,9 @@ class CreateBackupActivity : AppCompatActivity() {
                             db.collection("files").document(fileName)
                                 .set(fileData)
 
+                            // send push notification
+
+
                             Toast.makeText(applicationContext, "Backup Created Successfully", Toast.LENGTH_SHORT).show()
                             finish()
                         }
