@@ -43,6 +43,7 @@ class FilesFragment() : Fragment() {
         val query: Query = db
             .collection("files")
             .whereEqualTo("createdBy", userID)
+            .orderBy("timeStamp", Query.Direction.DESCENDING)
 
         val options = FirestoreRecyclerOptions.Builder<Backup>()
                 .setQuery(query, Backup::class.java)

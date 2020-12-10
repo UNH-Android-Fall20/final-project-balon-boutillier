@@ -46,9 +46,9 @@ class FileAdapter(options: FirestoreRecyclerOptions<Backup>)
         // Reference to an image file in Cloud Storage
         val storageRef = Firebase.storage.getReferenceFromUrl("gs://final-project-9c2ed.appspot.com/${model.fileName}")
 
+        // get the imageUrl and set it to our Glide
         storageRef.getDownloadUrl().addOnSuccessListener(OnSuccessListener<Any> { uri ->
             val imageURL = uri.toString()
-            Log.d(TAG, imageURL)
             Glide
                 .with(holder.backupImage)
                 .load(imageURL)
@@ -57,14 +57,7 @@ class FileAdapter(options: FirestoreRecyclerOptions<Backup>)
         }).addOnFailureListener(OnFailureListener {
             // Handle any errors
         })
-/*
-        // use glide to load the image late
-        Glide
-            .with(holder.backupImage)
-            .load(storageRef)
-            .placeholder(circularProgressDrawable)
-            .into(holder.backupImage)
-*/
+
         holder.backupTitle.text = model.title
         holder.backupDesc.text = model.desc
     }
