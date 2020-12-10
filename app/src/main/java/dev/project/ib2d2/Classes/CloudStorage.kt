@@ -57,15 +57,6 @@ class CloudStorage {
         }
     }
 
-
-    /**
-     * downloadFile(): download file from firebase
-     *
-     *  @ref: https://firebase.google.com/docs/storage/android/download-files
-     */
-    private fun downloadFile(){
-    }
-
     /**
      * upload(): perform upload to firebase storage
      */
