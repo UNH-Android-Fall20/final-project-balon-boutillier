@@ -65,7 +65,7 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/descBackup"
+            android:id="@+id/editText_profName"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="265dp"
             android:layout_height="wrap_content"

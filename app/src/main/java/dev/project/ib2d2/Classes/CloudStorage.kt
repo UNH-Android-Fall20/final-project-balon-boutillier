@@ -69,7 +69,7 @@ class CloudStorage {
     /**
      * upload(): perform upload to firebase storage
      */
-    suspend fun upload(fn: String, bt: Bitmap, hash: String, time: String){
+    suspend fun upload(fn: String, bt: Bitmap, hash: String, time: String) : String{
         // initialize variables
         fileName = fn
         bitmap = bt
@@ -81,14 +81,7 @@ class CloudStorage {
             uploadFile()
         }
         Log.d(TAG, "Upload to Firebase complete")
+
+        return fileName
     }
-
-    /**
-     * download): get file from firebase
-     */
-    suspend fun download(fn: String){
-        fileName = fn
-    }
-
-
 }

@@ -9,16 +9,34 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.FirebaseFirestore
+import dev.project.ib2d2.Classes.CloudStorage
+import dev.project.ib2d2.Fragments.ProfileFragment
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.profile_edit_layout.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.security.MessageDigest
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
 private val IMAGE_GALLERY_REQUEST_CODE = 20
 private val IMAGE_CAMERA_REQUEST_CODE = 21
 
@@ -31,6 +49,7 @@ class ProfileEdit : AppCompatActivity() {
     private lateinit var saveProfile: Button
     private lateinit var bitmap: Bitmap
     private var imageSelected = false
+    private lateinit var userID: String
 
     // Local persistent storage
     private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
@@ -50,6 +69,7 @@ class ProfileEdit : AppCompatActivity() {
 
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
+
 
         selectAvatar = findViewById(R.id.selectAvatar)
         selectAvatar.setOnClickListener {
@@ -108,11 +128,40 @@ class ProfileEdit : AppCompatActivity() {
             }
         }
 
+        /* todo:
+         * upload image to firebaser
+         * store display name and image url into firebase
+         * toast and return to profile
+         */
+
+
         saveProfile = findViewById(R.id.saveProfile)
         if(!imageSelected) {
             // if there was no image selected, try setting just the display name
             saveProfile.setOnClickListener {
-                Log.d(TAG, "GOT HIT")
+                val displayName = editText_profName.editText?.text.toString()
+
+                if( displayName.isBlank() ){
+                    Toast.makeText(this, "Error: You must choose a display name!", Toast.LENGTH_SHORT).show()
+                } else {
+                    userID = prefs?.getString("USERID", null).toString()
+
+                    CoroutineScope(IO).launch{
+                    db.collection("users").document(userID)
+                        .update("displayName", displayName)
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Updated display name successfully.")
+
+                        }
+                        .addOnFailureListener {
+                            Log.d(TAG, "Error: failed to update user display name")
+                        }
+                        launch(Main){
+                            Toast.makeText(applicationContext, "Display name updated!", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    }
+                }
             }
         }
 
@@ -125,6 +174,7 @@ class ProfileEdit : AppCompatActivity() {
     /**
      * OnActivityResultListener: callback for image picker(s)
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // check if the RESULT_OK and if the data exists
@@ -162,14 +212,75 @@ class ProfileEdit : AppCompatActivity() {
      *
      *  @bitmap Bitmap: bitmap data of image
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun postImageSelectionSuccess(){
+        // if there was no image selected, try setting just the display name
         saveProfile.setOnClickListener {
-            Log.d(TAG, bitmap.toString())
+            val displayName = editText_profName.editText?.text.toString()
 
+            if( displayName.isBlank() ){
+                Toast.makeText(this, "Error: You must choose a display name!", Toast.LENGTH_SHORT).show()
+            } else {
+                userID = prefs?.getString("USERID", null).toString()
+                val timeStamp = DateTimeFormatter
+                    .ofPattern("yyyy_MM_dd_hh_mm_ss_SSS")
+                    .withZone(ZoneOffset.UTC)
+                    .format(Instant.now())
+
+                // create sha1 hash of image
+                val shaHash = sha1Hash(bitmap)
+                Log.d(TAG, timeStamp)
+                Log.d(TAG, shaHash)
+
+                // create a fileName of the image
+                val imgName = "/avatars/$userID-$timeStamp"
+                CoroutineScope(IO).launch{
+                    Log.d(TAG, "Uploading image...")
+                    val firebase = CloudStorage()
+                    val imgUrl = firebase.upload(imgName, bitmap, shaHash, timeStamp)
+
+                    Log.d(TAG, "Saving image to firebase...")
+                    db.collection("users").document(userID)
+                        .update("profilePic", imgUrl)
+                        .addOnSuccessListener {}
+                        .addOnFailureListener {
+                            Log.d(TAG, "Error: failed to update user display name")
+                        }
+
+                    Log.d(TAG, "Saving display name to firebase...")
+                    db.collection("users").document(userID)
+                        .update("displayName", displayName)
+                        .addOnSuccessListener {}
+                        .addOnFailureListener {
+                            Log.d(TAG, "Error: failed to update user display name")
+                        }
+
+
+                    launch(Main){
+                        Toast.makeText(applicationContext, "Profile Updated!", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+            }
         }
 
     }
 
+    /**
+     * sha1Hash(): create sha1 hash of bitmap
+     *
+     *  @bitmap: user selected image
+     *
+     *  @ref: https://developer.android.com/reference/kotlin/java/security/MessageDigest
+     */
+    private fun sha1Hash(bitmap: Bitmap): String    {
+        // convert bitmap to ByeArray
+        val byteArray = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArray)
+        return MessageDigest.getInstance("SHA-1")
+            .digest(byteArray.toByteArray())
+            .fold("", { str, it -> str + "%02x".format(it) })
+    }
 
     // permission management
     // @ref: https://developer.android.com/training/permissions/requesting#kotlin
