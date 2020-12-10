@@ -9,16 +9,17 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import dev.project.ib2d2.Classes.BackBlaze
-import dev.project.ib2d2.Classes.CloudStorage
 import dev.project.ib2d2.Models.Backup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 
 class ViewBackupActivity : AppCompatActivity() {
     private val TAG = javaClass.name
+    private val db = FirebaseFirestore.getInstance()
 
     // buttons, images, and lateinits
     private lateinit var fbImage: ImageView
@@ -57,9 +59,8 @@ class ViewBackupActivity : AppCompatActivity() {
             model = extras.getSerializable("DATAMODEL") as Backup
         }
 
-        // populate the page for the user
-        populateBackup()
-
+        // get the b2 image and put it in the view
+        b2Image = findViewById(R.id.b2Image)
         b2Image.setOnClickListener{
             // create intent and add the fileName
             val intent = Intent(applicationContext, ImageViewer::class.java)
@@ -72,6 +73,8 @@ class ViewBackupActivity : AppCompatActivity() {
             startActivity(intent, options.toBundle())
         }
 
+        // get the fb image and put it in the view
+        fbImage = findViewById(R.id.fbImage)
         fbImage.setOnClickListener{
             // create intent and add the fileName
             val intent = Intent(applicationContext, ImageViewer::class.java)
@@ -84,6 +87,33 @@ class ViewBackupActivity : AppCompatActivity() {
             startActivity(intent, options.toBundle())
         }
 
+        // populate the page for the user
+        populateBackup()
+
+        // have a button to remove backups per request
+        deleteButton = findViewById(R.id.deleteBackup_button)
+        deleteButton.setOnClickListener {
+            Log.d(TAG, "got here")
+            db.collection("files")
+                .whereEqualTo("fileName", model.fileName)
+                .get()
+                .addOnSuccessListener { docs ->
+                    for (doc in docs) {
+                        db.collection("files").document(doc.id)
+                            .delete()
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Backup Deleted", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            .addOnFailureListener{ e-> Log.d(TAG, "Error: ", e)}
+                    }
+                }
+                .addOnFailureListener{e ->
+                    Log.d(TAG, "Error getting document: ", e)
+                }
+
+        }
+
         mTopToolbar.setNavigationOnClickListener{
             super.onBackPressed()
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
@@ -92,12 +122,9 @@ class ViewBackupActivity : AppCompatActivity() {
 
     /**
      * populateBackup(): populates the view backup page
-     *
      */
     private fun populateBackup(){
-        // get the image views and text views
-        fbImage = findViewById(R.id.fbImage)
-        b2Image = findViewById(R.id.b2Image)
+        // get the text views
         titleText = findViewById(R.id.titleText)
         descText = findViewById(R.id.descText)
         createdText = findViewById(R.id.createdText)
