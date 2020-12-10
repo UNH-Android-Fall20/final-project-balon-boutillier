@@ -28,6 +28,9 @@
         <!-- Activity to control Backup Creation -->
         <activity android:name=".CreateBackupActivity"/>
 
+        <!-- Activity to view Backups -->
+        <activity android:name=".ViewBackupActivity"/>
+
         <!-- Activity MainActivity -->
         <activity android:name=".MainActivity">
             <intent-filter>

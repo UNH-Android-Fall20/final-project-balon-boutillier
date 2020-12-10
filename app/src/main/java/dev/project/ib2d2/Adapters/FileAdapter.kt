@@ -1,8 +1,13 @@
 package dev.project.ib2d2.Adapters
 
+import android.app.ActivityOptions
+import android.content.Intent
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -11,8 +16,10 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import dev.project.ib2d2.CreateBackupActivity
 import dev.project.ib2d2.Models.Backup
 import dev.project.ib2d2.R
+import dev.project.ib2d2.ViewBackupActivity
 import dev.project.ib2d2.Views.FileView
 
 
@@ -36,8 +43,17 @@ class FileAdapter(options: FirestoreRecyclerOptions<Backup>)
 
     override fun onBindViewHolder(holder: FileView, position: Int, model: Backup) {
         // handle if a user clicks the buttons
+        holder.itemView.setOnClickListener {
+            // create intent and add the fileName
+            val intent = Intent(holder.itemView.context, ViewBackupActivity::class.java)
+            intent.putExtra("DATAMODEL", model)
 
-        // spawn a spinner to fill the area
+            // customize animation then send us over
+            val options = ActivityOptions.makeCustomAnimation(holder.itemView.context, R.anim.right_in, R.anim.left_out)
+            holder.itemView.context.startActivity(intent, options.toBundle())
+        }
+
+        // spawn a spinner to fill the area (as demonstrated in class)
         val circularProgressDrawable = CircularProgressDrawable(holder.itemView.context)
         circularProgressDrawable.strokeWidth = 5f
         circularProgressDrawable.centerRadius = 30f

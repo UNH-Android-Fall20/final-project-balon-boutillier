@@ -63,4 +63,10 @@
     <string name="backupDesc">Description:</string>
     <string name="backupDescHelper">Write something memorable</string>
     <string name="preview">Image Preview</string>
+    <string name="b2Backup">BackBlaze Backup</string>
+    <string name="fbBackup">Firebase Backup</string>
+    <string name="deleteBackup">Delete Backup</string>
+    <string name="shaHash">SHA-1 Hash:</string>
+    <string name="timeStamp">Timestamp:</string>
+    <string name="createdBy">Created By:</string>
 </resources>
