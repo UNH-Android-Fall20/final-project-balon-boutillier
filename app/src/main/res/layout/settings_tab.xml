@@ -7,68 +7,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/acct_id"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginEnd="10dp"/>
-
-        <!-- TODO have the text be of the actual account id -->
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/acct_id" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_key"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginEnd="10dp"/>
-
-        <!-- TODO have the text be of the actual settings key -->
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bucket"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginEnd="10dp"/>
-
-        <!-- TODO have the text be of the actual bucket -->
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bucket" />
-
-    </LinearLayout>
+    
 
     <Button
         android:id="@+id/log_button"

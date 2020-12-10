@@ -22,6 +22,7 @@ import dev.project.ib2d2.ExampleActivity
 
 class AboutFragment : Fragment(), OnMapReadyCallback {
     private lateinit var facebookButton: Button
+    private lateinit var twitterButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +39,7 @@ class AboutFragment : Fragment(), OnMapReadyCallback {
 
         // Example to handle the "Facebook" button and go to that view
         facebookButton = rootView.findViewById(R.id.facebook)
+        facebookButton.visibility = View.GONE
         facebookButton.setOnClickListener {
             // spawn intent and customize animations
             val intent = Intent(rootView.context, ExampleActivity::class.java)
@@ -45,6 +47,8 @@ class AboutFragment : Fragment(), OnMapReadyCallback {
             startActivity(intent, options.toBundle())
         }
 
+        twitterButton = rootView.findViewById(R.id.twitter)
+        twitterButton.visibility = View.GONE
         return rootView
     }
 
