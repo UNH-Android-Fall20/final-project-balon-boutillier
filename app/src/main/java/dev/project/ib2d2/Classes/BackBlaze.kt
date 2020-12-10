@@ -27,7 +27,7 @@ class BackBlaze {
     private lateinit var bucketID: String
     private lateinit var uploadUrl: String
     private lateinit var accUploadToken: String
-    private lateinit var fileID: String
+    private lateinit var fileName: String
 
     // data for upload
     private lateinit var bitmap: Bitmap
@@ -118,7 +118,7 @@ class BackBlaze {
     private fun uploadFile(){
         // create connection, headers
         var url = URL(uploadUrl)
-        val fileName = (userID + "_" + timeStamp)
+        val uploadName = (userID + "_" + timeStamp)
         val contentType = "image/jpeg"
         lateinit var json: JSONObject
 
@@ -133,7 +133,7 @@ class BackBlaze {
                 requestMethod = "POST"
                 setRequestProperty("Authorization", accUploadToken)
                 setRequestProperty("Content-Type", contentType)
-                setRequestProperty("X-Bz-File-Name", fileName)
+                setRequestProperty("X-Bz-File-Name", uploadName)
                 setRequestProperty("X-Bz-Content-Sha1", shaHash)
                 doOutput = true
                 outputStream.write(imageData)
@@ -142,12 +142,12 @@ class BackBlaze {
                 json = JSONObject(jsonDecode(inputStream))
 
                 // retrieve data from b2 json
-                fileID = json["fileId"] as String
+                fileName = json["fileName"] as String
 
 
                 // log what we got from b2
                 Log.d(TAG, json.toString())
-                Log.d(TAG, fileID)
+                Log.d(TAG, fileName)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -161,7 +161,7 @@ class BackBlaze {
      */
     private fun downloadFile(){
         // create connection, headers
-        var url = URL("$downloadUrl/b2api/v2/b2_download_file_by_id?fileId=$fileID")
+        var url = URL("$downloadUrl/file/$bucketName/$fileName")
         lateinit var imageData: ByteArray
 
         try {
@@ -208,13 +208,14 @@ class BackBlaze {
         shaHash = hash
         timeStamp = time
 
-        Log.d(TAG, "uploading file...")
+        Log.d(TAG, "uploading file to b2...")
         withContext(Dispatchers.IO){
             authorize()
             getUploadUrl()
             uploadFile()
         }
-        return fileID
+        Log.d(TAG, "Upload to B2 complete")
+        return fileName
     }
 
     /**
@@ -222,10 +223,10 @@ class BackBlaze {
      *
      * @fid String: fileId to download from B2
      */
-    suspend fun download(fid: String): Bitmap{
-        fileID = fid
+    suspend fun download(fnm: String): Bitmap{
+        fileName = fnm
 
-        Log.d(TAG, "downloading file...")
+        Log.d(TAG, "downloading file from b2...")
         withContext(Dispatchers.IO){
             authorize()
             downloadFile()
