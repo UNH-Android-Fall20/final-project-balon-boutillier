@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import android.content.Intent
 import android.content.SharedPreferences
 import android.text.TextUtils
+import android.view.View
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -20,6 +21,7 @@ import java.lang.Exception
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
     private val db = FirebaseFirestore.getInstance()
+    private val isDev = false
 
     private lateinit var auth: FirebaseAuth
     private lateinit var b_login: Button
@@ -130,6 +132,9 @@ class MainActivity : AppCompatActivity() {
         /* Temporarily add a root login button to override having to sign in each time */
         b_rootLogin.setOnClickListener {
            loginUser("admin@b2d2.dev", "password123")
+        }
+        if(!isDev) {
+            b_rootLogin.setVisibility(View.GONE)
         }
     }
 
