@@ -120,18 +120,29 @@ class CreateBackupActivity : AppCompatActivity() {
                     Log.d(TAG, timeStamp)
                     Log.d(TAG, shaHash)
 
-                    // create Backblaze object
-                    val b2 = BackBlaze()
+                    // get userID
                     var userID = prefs?.getString("USERID", "NULL")
 
 
-                    // run the backup code necessary
+                    Log.d(TAG, "setting imageview to null...")
+                    backupImage.setImageDrawable(null)
+                    lateinit var dlBitmap: Bitmap
+                    var isDone = false
+
+                    // run the backup in a coroutine
                     val doBackup = GlobalScope.launch {
                         if (userID != null) {
-                            b2.upload(userID, bitmap, title, desc, shaHash, timeStamp)
+                            val b2 = BackBlaze()
+                            b2.upload(userID, bitmap, shaHash, timeStamp)
+                            val b2dl = BackBlaze()
+                            dlBitmap = (b2dl.download("4_zf67167f4a665004c7b5c0d1a_f102b2e6663469bc7_d20201210_m003320_c001_v0001146_t0011") as? Bitmap)!!
+                            Log.d(TAG, sha1Hash(dlBitmap))
+                            isDone = true
                         }
                     }
 
+                    while(!isDone){}
+                    backupImage.setImageBitmap(dlBitmap)
                 }
             }
         }
