@@ -12,16 +12,14 @@ import android.view.View
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.editText_email
 import kotlinx.android.synthetic.main.activity_main.editText_password
 import kotlinx.android.synthetic.main.register_layout.*
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.name
     private val db = FirebaseFirestore.getInstance()
-    private val isDev = false
+    private val isDev = true
 
     private lateinit var auth: FirebaseAuth
     private lateinit var b_login: Button

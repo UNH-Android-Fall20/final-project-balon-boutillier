@@ -40,7 +40,9 @@ class FileAdapter(options: FirestoreRecyclerOptions<Backup>)
         return FileView(view)
     }
 
-
+    /*
+     * onBindViewHolder(): fills the data and handle clicks of each row
+     */
     override fun onBindViewHolder(holder: FileView, position: Int, model: Backup) {
         // handle if a user clicks the buttons
         holder.itemView.setOnClickListener {

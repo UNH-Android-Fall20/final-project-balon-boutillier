@@ -116,7 +116,19 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="135dp" />
+        android:layout_height="75dp" />
+
+    <ProgressBar
+        android:id="@+id/uploadProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/colorSecondaryLight"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createBackup_button"

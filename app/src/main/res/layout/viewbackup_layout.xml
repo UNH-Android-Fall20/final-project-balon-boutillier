@@ -32,16 +32,20 @@
             android:id="@+id/b2Image"
             android:layout_width="512px"
             android:layout_height="512px"
+            android:clickable="true"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/imageoutline"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            android:focusable="true" />
 
         <ImageView
             android:id="@+id/fbImage"
             android:layout_width="512px"
             android:layout_height="512px"
+            android:clickable="true"
             android:background="@drawable/imageoutline"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            android:focusable="true" />
     </LinearLayout>
 
 

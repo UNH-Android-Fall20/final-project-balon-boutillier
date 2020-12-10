@@ -14,7 +14,6 @@ import java.net.URL
 class BackBlaze {
     private val TAG = javaClass.name
 
-    // account details TODO: move to a proper file
     private val accountID: String = "0016174650cbcda0000000008"
     private val appKey: String = "K001JQR6IDafd/zEippnmJsSJZkDljU"
     private val bucketName: String = "ib2d2-dev"

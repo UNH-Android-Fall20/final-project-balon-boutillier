@@ -24,6 +24,7 @@
                 android:id="@+id/listBackupImage"
                 android:layout_width="300px"
                 android:layout_height="300px"
+                android:layout_marginLeft="6dp"
                 android:layout_gravity="center_vertical"
                 tools:srcCompat="@tools:sample/avatars" />
 

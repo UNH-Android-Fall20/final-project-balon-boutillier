@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import dev.project.ib2d2.Adapters.FileAdapter
 import dev.project.ib2d2.Models.Backup
@@ -35,29 +36,32 @@ class FilesFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.files_tab, container, false)
+        val fileList = rootView.findViewById(R.id.files_list) as RecyclerView
 
         // load prefs and get userID
         prefs = rootView.context.getSharedPreferences(PREFS_FILENAME, 0)
         var userID = prefs?.getString("USERID", "NULL")
 
+        // query the database and create options for the adapter
         val query: Query = db
             .collection("files")
             .whereEqualTo("createdBy", userID)
             .orderBy("timeStamp", Query.Direction.DESCENDING)
 
         val options = FirestoreRecyclerOptions.Builder<Backup>()
-                .setQuery(query, Backup::class.java)
-                .build()
+            .setQuery(query, Backup::class.java)
+            .build()
 
+        // create the adapater and set up the list of files
         fileAdapter = FileAdapter(options)
-
-        val fileList = rootView.findViewById(R.id.files_list) as RecyclerView
         fileList.adapter = fileAdapter
         fileList.layoutManager = LinearLayoutManager(rootView.context)
+
 
         return rootView
     }
 
+    // these functions are needed to create the list
     override fun onStart() {
         super.onStart()
         fileAdapter.startListening()

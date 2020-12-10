@@ -31,6 +31,9 @@
         <!-- Activity to view Backups -->
         <activity android:name=".ViewBackupActivity"/>
 
+        <!-- Activity to view image -->
+        <activity android:name=".ImageViewer"/>
+
         <!-- Activity MainActivity -->
         <activity android:name=".MainActivity">
             <intent-filter>

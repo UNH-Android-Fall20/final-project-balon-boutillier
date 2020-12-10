@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.Contacts
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -36,6 +37,7 @@ class CreateBackupActivity : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var bitmap: Bitmap
     private lateinit var b_createBackup: Button
+    private lateinit var uploadProgress: ProgressBar
 
     // Local persistent storage
     private val PREFS_FILENAME = "dev.project.ib2d2.prefs"
@@ -88,15 +90,20 @@ class CreateBackupActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun backupHandler(bitmap: Bitmap){
         b_createBackup = findViewById(R.id.createBackup_button)
+        uploadProgress = findViewById(R.id.uploadProgress)
 
-        /* TODO: ideas --
+        uploadProgress.visibility = View.INVISIBLE
+
+        /* ideas --
          * (?) encryption: have user make local pw
          * (?) do not upload to firestore
          * (?) enter in settings
          * (?) AES data
          */
+
         // handle the createBackup button
         b_createBackup.setOnClickListener{
+            uploadProgress.visibility = View.VISIBLE
             Log.d(TAG, "Running backup routine...")
             val title = titleBackup.editText?.text.toString()
             val desc = descBackup.editText?.text.toString()
@@ -123,8 +130,6 @@ class CreateBackupActivity : AppCompatActivity() {
                     // create the fileName
                     val fileName = userID + "_" + timeStamp
 
-                    // TODO: show progress bar
-
                     // call coroutine to thread fileUpload
                     CoroutineScope(IO).launch{
                         if (userID != null) {
@@ -150,7 +155,8 @@ class CreateBackupActivity : AppCompatActivity() {
                             db.collection("files").document(fileName)
                                 .set(fileData)
 
-                            // TODO: force back press and show confirmation
+                            Toast.makeText(applicationContext, "Backup Created Successfully", Toast.LENGTH_SHORT).show()
+                            finish()
                         }
                     }
                 }
