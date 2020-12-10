@@ -42,7 +42,7 @@ class JoinTeamsFragment: Fragment() {
             // TODO add a check to see if person about to be added is already on team
             if(teamCode !== "") {
                 db.collection("teams").document(teamCode).update(
-                    "teamMembers", FieldValue.arrayUnion(prefs?.getString("EMAILADDR", "<Username Holder>"))
+                    "teamMembers", FieldValue.arrayUnion(prefs?.getString("EMAILADDR", "<Username Holder>").toString())
                 )
                     .addOnSuccessListener {
                         Log.d(TAG, "Team member added")

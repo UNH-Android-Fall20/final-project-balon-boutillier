@@ -47,7 +47,7 @@ class CreateTeamsFragment : Fragment() {
 
         createTeamButton.setOnClickListener {
             val teamName = createTeamName.text.toString()
-            val teamMembers = arrayListOf(prefs?.getString("EMAILADDR", "<Username Holder>"))
+            val teamMembers = arrayListOf(prefs?.getString("EMAILADDR", "<Username Holder>").toString())
             val team = hashMapOf(
                 "teamName" to teamName,
                 "teamCode" to teamCode,
