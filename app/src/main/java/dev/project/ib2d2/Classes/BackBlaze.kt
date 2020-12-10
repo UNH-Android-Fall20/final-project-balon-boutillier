@@ -1,6 +1,7 @@
 package dev.project.ib2d2.Classes
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
 import com.google.gson.JsonObject
@@ -26,11 +27,10 @@ class BackBlaze {
     private lateinit var bucketID: String
     private lateinit var uploadUrl: String
     private lateinit var accUploadToken: String
+    private lateinit var fileID: String
 
     // data for upload
     private lateinit var bitmap: Bitmap
-    private lateinit var title: String
-    private lateinit var desc: String
     private lateinit var shaHash: String
     private lateinit var timeStamp: String
     private lateinit var userID: String
@@ -111,7 +111,7 @@ class BackBlaze {
 
 
     /**
-     * uploadFile(): upload thef file to b2
+     * uploadFile(): upload the file to b2
      *
      *  @ref: https://www.backblaze.com/b2/docs/b2_upload_file.html
      */
@@ -124,7 +124,7 @@ class BackBlaze {
 
         // convert image data
         val byteStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteStream)
         val imageData = byteStream.toByteArray()
 
         try {
@@ -138,15 +138,41 @@ class BackBlaze {
                 doOutput = true
                 outputStream.write(imageData)
                 Log.d(TAG, responseCode.toString())
-                Log.d(TAG, responseMessage.toString())
 
                 json = JSONObject(jsonDecode(inputStream))
 
                 // retrieve data from b2 json
+                fileID = json["fileId"] as String
 
 
                 // log what we got from b2
                 Log.d(TAG, json.toString())
+                Log.d(TAG, fileID)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * downloadFile(): download a file from b2
+     *
+     *  @ref: https://www.backblaze.com/b2/docs/b2_upload_file.html
+     */
+    private fun downloadFile(){
+        // create connection, headers
+        var url = URL("$downloadUrl/b2api/v2/b2_download_file_by_id?fileId=$fileID")
+        lateinit var imageData: ByteArray
+
+        try {
+            // can we authorize with b2?
+            (url.openConnection() as? HttpURLConnection)?.run{
+                requestMethod = "GET"
+                setRequestProperty("Authorization", accAuthToken)
+                imageData = inputStream.readBytes()
+
+                // convert imageData back to bitmap
+                bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -166,19 +192,44 @@ class BackBlaze {
         return "Error: Could not decode json data"
     }
 
-    suspend fun upload(usr: String, bt: Bitmap, tt: String, ds: String, hash: String, time: String){
+    /**
+     * upload(): perform upload() to b2 using co-routines
+     *
+     * @usr String: UserID
+     * @bt Bitmap: imageData
+     * @hash String: sha1 hash of data
+     * @time String: timeStamp of selection
+     */
+    suspend fun upload(usr: String, bt: Bitmap, hash: String, time: String): String{
         // initialize our variables
         userID = usr
         bitmap = bt
-        title = tt
-        desc = ds
+
         shaHash = hash
         timeStamp = time
 
+        Log.d(TAG, "uploading file...")
         withContext(Dispatchers.IO){
             authorize()
             getUploadUrl()
             uploadFile()
         }
+        return fileID
+    }
+
+    /**
+     * download(): perform download to b2 using co-routines
+     *
+     * @fid String: fileId to download from B2
+     */
+    suspend fun download(fid: String): Bitmap{
+        fileID = fid
+
+        Log.d(TAG, "downloading file...")
+        withContext(Dispatchers.IO){
+            authorize()
+            downloadFile()
+        }
+        return bitmap
     }
 }
