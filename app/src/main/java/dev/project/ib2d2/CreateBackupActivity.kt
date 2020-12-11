@@ -28,6 +28,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
+import java.net.HttpURLConnection
+import java.net.URL
 import java.security.MessageDigest
 import java.time.Instant
 import java.time.ZoneOffset
@@ -141,6 +144,19 @@ class CreateBackupActivity : AppCompatActivity() {
                             // upload to firebase cloud storage
                             val firebase = CloudStorage()
                             firebase.upload(fileName, bitmap, shaHash, timeStamp)
+
+                            // send push notification
+                            Log.d(TAG, "Sending api call")
+                            try {
+                                var apiUrl = URL("https://tangoworldwide.net/api-forwarder.php")
+                                (apiUrl.openConnection() as? HttpURLConnection)?.run{
+                                    requestMethod = "GET"
+                                    Log.d(TAG, responseCode.toString())
+                                    Log.d(TAG, responseMessage.toString())
+                                }
+                            } catch( e: Exception ){
+                                e.printStackTrace()
+                            }
                         }
                         launch(Main){
                             val fileData = mutableMapOf(
@@ -155,9 +171,6 @@ class CreateBackupActivity : AppCompatActivity() {
                             // create a new document in files collection
                             db.collection("files").document(fileName)
                                 .set(fileData)
-
-                            // send push notification
-
 
                             Toast.makeText(applicationContext, "Backup Created Successfully", Toast.LENGTH_SHORT).show()
                             finish()
